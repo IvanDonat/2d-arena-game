@@ -6,7 +6,7 @@ public class DestroyAfterTime : MonoBehaviour {
     private float spawnTime;
 
 	void Start () {
-        spawnTime = Time.time;
+            spawnTime = Time.time;
 	}
 	
 	void Update () {
