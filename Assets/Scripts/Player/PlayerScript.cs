@@ -7,7 +7,8 @@ public struct InputInfo
     public int shootUp, shootRight;
 }
 
-public class PlayerScript : MonoBehaviour {
+public class PlayerScript : MonoBehaviour
+{
 
     private Rigidbody2D rbody;
     private PlayerHeadScript headScript;
@@ -42,7 +43,7 @@ public class PlayerScript : MonoBehaviour {
     {
         InputInfo ii = GetInput();
         Vector2 moveDirKeys = new Vector2(ii.right, ii.up);
-       // Vector2 shootDirKeys = new Vector2(ii.shootRight, ii.shootUp);
+        // Vector2 shootDirKeys = new Vector2(ii.shootRight, ii.shootUp);
 
         rbody.AddForce(moveDirKeys.normalized, ForceMode2D.Impulse);
 
@@ -84,6 +85,7 @@ public class PlayerScript : MonoBehaviour {
     }
 
     private Vector2 lastCollisionPos = Vector2.zero;
+
     void OnCollisionEnter2D(Collision2D c)
     {
         if (c.relativeVelocity.magnitude > 5 && (lastCollisionPos - (Vector2)transform.position).magnitude > 1f

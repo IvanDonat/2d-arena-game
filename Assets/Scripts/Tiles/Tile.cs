@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Tile : MonoBehaviour {
+public class Tile : MonoBehaviour
+{
 
     public bool destroyable = true;
     public float health = 15f;
@@ -9,14 +10,16 @@ public class Tile : MonoBehaviour {
     public Transform drop;
     private string tileDamagePath = "Arena/Tiles/TileDamage";
 
-	void Start () {
+    void Start()
+    {
 	
-	}
-	
+    }
 
-	void Update () {
+
+    void Update()
+    {
 	
-	}
+    }
 
     public void TakeDamage(float dmg)
     {

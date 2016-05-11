@@ -1,11 +1,13 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class GunScript : MonoBehaviour {
+public class GunScript : MonoBehaviour
+{
 
     public Transform bulletPrefab;
     public float shootDelay = 1f;
-    public bool repeated = true; // can hold if repeated
+    public bool repeated = true;
+    // can hold if repeated
 
     public bool useBuildupTime = false;
     public float buildupTime = 1f;
@@ -18,12 +20,14 @@ public class GunScript : MonoBehaviour {
     private float keyClicked;
     private float holdTime;
 
-	void Start () {
+    void Start()
+    {
         
-	}
-	
+    }
 
-    public void CustomUpdate (InputInfo ii) {
+
+    public void CustomUpdate(InputInfo ii)
+    {
 
         if (ii.shootUp != 0 || ii.shootRight != 0)
         {
@@ -52,7 +56,7 @@ public class GunScript : MonoBehaviour {
         else
             keyHeld = false;
 
-	}
+    }
 
     private void Shoot()
     {

@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class EnemyScript : MonoBehaviour {
+public class EnemyScript : MonoBehaviour
+{
 
     private Rigidbody2D rbody;
     private EnemyHeadScript headScript;
@@ -30,7 +31,7 @@ public class EnemyScript : MonoBehaviour {
         rbody = GetComponent<Rigidbody2D>();
         headScript = GetComponentInChildren<EnemyHeadScript>();
         myLight = GetComponentInChildren<Light>();
-        player = GameObject.FindGameObjectWithTag ("Player").transform;
+        player = GameObject.FindGameObjectWithTag("Player").transform;
         gm = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
 
         holdDistance += Random.Range(0f, 4f);
@@ -46,13 +47,15 @@ public class EnemyScript : MonoBehaviour {
             evadeDirResetInterval = Random.Range(0.2f, 1f);
         }
 
-        if (player) {}
+        if (player)
+        {
+        }
         else
         {
             // Look every second
             if (Time.time - lastLookedForPlayer > 1f)
             {
-                player = GameObject.FindGameObjectWithTag ("Player").transform;
+                player = GameObject.FindGameObjectWithTag("Player").transform;
                 lastLookedForPlayer = Time.time;
             }
         }

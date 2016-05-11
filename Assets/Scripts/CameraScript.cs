@@ -1,22 +1,23 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class CameraScript : MonoBehaviour {
+public class CameraScript : MonoBehaviour
+{
 
-	public Transform player;
+    public Transform player;
     private float dampTime = .1f;
     private Vector3 velocity;
 
     private float lastLookedForPlayer;
 
-	void Start () 
-	{
-        player = GameObject.FindGameObjectWithTag ("Player").transform;
+    void Start()
+    {
+        player = GameObject.FindGameObjectWithTag("Player").transform;
         lastLookedForPlayer = Time.time;
-	}
+    }
 
-	void LateUpdate () 
-	{
+    void LateUpdate()
+    {
         if (player)
         {
             Vector3 point = Camera.main.WorldToViewportPoint(player.position);
@@ -29,9 +30,9 @@ public class CameraScript : MonoBehaviour {
             // Look every second
             if (Time.time - lastLookedForPlayer > 1f)
             {
-                player = GameObject.FindGameObjectWithTag ("Player").transform;
+                player = GameObject.FindGameObjectWithTag("Player").transform;
                 lastLookedForPlayer = Time.time;
             }
         }
-	}
+    }
 }

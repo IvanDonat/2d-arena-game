@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class GameManager : MonoBehaviour {
+public class GameManager : MonoBehaviour
+{
 
     public bool createTileBackground = true;
     public int width = 48, height = 48;
@@ -16,19 +17,19 @@ public class GameManager : MonoBehaviour {
 
     private ArrayList enemies;
 
-	void Start()
-	{
+    void Start()
+    {
         GetTiles();
         GenerateArena();
         SpawnPlayerAndEnemies();
-	}
+    }
 
     private void GetTiles()
     {
         tiles = new GameObject[width, height];
     }
 
-	void GenerateArena()
+    void GenerateArena()
     {
         GameObject bgParent = new GameObject("Background");
         bgParent.transform.parent = transform;
@@ -51,9 +52,9 @@ public class GameManager : MonoBehaviour {
             {
                 for (int x = 0; x < width; x++)
                 {
-                    if (groupParent[x/groupW, y/groupH] == null)
+                    if (groupParent[x / groupW, y / groupH] == null)
                     {
-                        groupParent[x / groupW, y / groupH] = new GameObject("Group " + x/groupW + " " + y/groupH);
+                        groupParent[x / groupW, y / groupH] = new GameObject("Group " + x / groupW + " " + y / groupH);
                         groupParent[x / groupW, y / groupH].transform.parent = bgParent.transform;
                     }
 
@@ -62,7 +63,7 @@ public class GameManager : MonoBehaviour {
                     {
                         instance = Instantiate(Resources.Load(floor, typeof(GameObject))) as GameObject;
                         instance.transform.position = new Vector2(x + offset_w, -y + offset_h);
-                     //   instance.transform.parent = bgParent.transform;
+                        //   instance.transform.parent = bgParent.transform;
                         instance.transform.parent = groupParent[x / groupW, y / groupH].transform;
                     }
                 }
@@ -133,12 +134,12 @@ public class GameManager : MonoBehaviour {
             for (int x = 1; x < width - 1; x++)
             {
                 int rr = Random.Range(0, 100);
-                if (rr <= 10)  
+                if (rr <= 10)
                 {
                     GameObject instance = Instantiate(Resources.Load("Arena/Tiles/BlueBlockade", typeof(GameObject))) as GameObject;
                     instance.transform.position = new Vector2(x + offset_w, -y + offset_h);
                     instance.transform.parent = tileParent.transform;
-                    if(immutable)
+                    if (immutable)
                         instance.GetComponent<Tile>().destroyable = false;
                     tiles[x, y] = instance;
                 }
@@ -147,13 +148,13 @@ public class GameManager : MonoBehaviour {
                     GameObject instance = Instantiate(Resources.Load("Arena/Tiles/Crate", typeof(GameObject))) as GameObject;
                     instance.transform.position = new Vector2(x + offset_w, -y + offset_h);
                     instance.transform.parent = tileParent.transform;
-                    if(immutable)
+                    if (immutable)
                         instance.GetComponent<Tile>().destroyable = false;
                     tiles[x, y] = instance;
                 }
             }
         }
-	}
+    }
 
     void SpawnPlayerAndEnemies()
     {
@@ -164,7 +165,7 @@ public class GameManager : MonoBehaviour {
         int num_enemies = 15;
         for (int i = 0; i < num_enemies; i++)
         {
-            Vector2 randomPos = new Vector2(Random.Range(2, width-2) + offset_w, -Random.Range(2, height-2) + offset_h);
+            Vector2 randomPos = new Vector2(Random.Range(2, width - 2) + offset_w, -Random.Range(2, height - 2) + offset_h);
             GameObject enemy = Instantiate(Resources.Load("Enemy"), randomPos, Quaternion.identity) as GameObject;
             enemies.Add(enemy);
         }
@@ -199,7 +200,7 @@ public class GameManager : MonoBehaviour {
     public ArrayList GetEnemies()
     {
         ArrayList toRemove = new ArrayList();
-        foreach(GameObject go in enemies)
+        foreach (GameObject go in enemies)
         {
             if (!go)
                 toRemove.Add(go);

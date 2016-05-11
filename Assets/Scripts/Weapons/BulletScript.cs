@@ -7,7 +7,8 @@ public enum DestroyType
     TIME
 }
 
-public class BulletScript : MonoBehaviour {
+public class BulletScript : MonoBehaviour
+{
 
     public float speed = 5f;
     public float dmg = 5f;
@@ -25,7 +26,8 @@ public class BulletScript : MonoBehaviour {
 
     private GameManager gm;
 
-    void Start () {
+    void Start()
+    {
         gm = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
 
         GetComponent<Rigidbody2D>().velocity = transform.right * speed;
@@ -33,15 +35,16 @@ public class BulletScript : MonoBehaviour {
         soundSpawn.gameObject.AddComponent<DestroyAfterTime>();
 
         spawnTime = Time.time;
-	}
-	
+    }
 
-	void Update () {
+
+    void Update()
+    {
         if (destroyType == DestroyType.TIME && Time.time - spawnTime >= timeToDestroy)
         {
             Explode();
         }
-	}
+    }
 
     void OnTriggerEnter2D(Collider2D c)
     {

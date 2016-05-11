@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class PlayerHeadScript : MonoBehaviour {
+public class PlayerHeadScript : MonoBehaviour
+{
 
     private Rigidbody2D rbody;
     private Quaternion targetRot = Quaternion.identity;
@@ -26,7 +27,7 @@ public class PlayerHeadScript : MonoBehaviour {
             float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg - 90;
             targetRot = Quaternion.Euler(transform.rotation.x, transform.rotation.y, angle);
         }
-        else if(ii.up != 0 || ii.right != 0)
+        else if (ii.up != 0 || ii.right != 0)
         {
             // face movement dir            
             Vector3 dir = new Vector3(ii.right, ii.up, 0);
