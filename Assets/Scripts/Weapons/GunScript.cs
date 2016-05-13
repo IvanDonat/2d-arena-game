@@ -28,7 +28,6 @@ public class GunScript : MonoBehaviour
 
     public void CustomUpdate(InputInfo ii)
     {
-
         if (ii.shootUp != 0 || ii.shootRight != 0)
         {
             if (!keyHeld)

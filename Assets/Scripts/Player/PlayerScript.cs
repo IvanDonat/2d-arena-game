@@ -14,6 +14,8 @@ public class PlayerScript : MonoBehaviour
     private PlayerHeadScript headScript;
     public GunScript currentGun;
 
+    public ParticleSystem particleDeath;
+
     private float health = 100;
 
     public AudioSource audioHitWall;
@@ -102,7 +104,14 @@ public class PlayerScript : MonoBehaviour
 
         if (health <= 0)
         {
-            print("DIED");
+            if (particleDeath)
+            {           
+                particleDeath.transform.parent = null;
+                particleDeath.gameObject.AddComponent<DestroyAfterTime>();
+                particleDeath.Play();
+            }
+
+            Destroy(gameObject);
         }
     }
 }

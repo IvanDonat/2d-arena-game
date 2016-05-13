@@ -30,7 +30,11 @@ public class CameraScript : MonoBehaviour
             // Look every second
             if (Time.time - lastLookedForPlayer > 1f)
             {
-                player = GameObject.FindGameObjectWithTag("Player").transform;
+                GameObject p = GameObject.FindGameObjectWithTag("Player");
+                if (p != null)
+                {
+                    player = GameObject.FindGameObjectWithTag("Player").transform;
+                }
                 lastLookedForPlayer = Time.time;
             }
         }

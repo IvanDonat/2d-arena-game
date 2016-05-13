@@ -23,6 +23,8 @@ public class EnemyScript : MonoBehaviour
     private float evadeDirResetInterval = 3;
     private Vector2 evadeDir = Vector2.zero;
 
+    private bool agressive = false;
+
     private Light myLight;
     private float lastLookedForPlayer;
 
@@ -55,11 +57,33 @@ public class EnemyScript : MonoBehaviour
             // Look every second
             if (Time.time - lastLookedForPlayer > 1f)
             {
-                player = GameObject.FindGameObjectWithTag("Player").transform;
+                GameObject p = GameObject.FindGameObjectWithTag("Player");
+                if (p != null)
+                {
+                    player = p.transform;
+                }
                 lastLookedForPlayer = Time.time;
             }
         }
             
+
+        InputInfo emulatedII; 
+
+        int yMovement = (int) rbody.velocity.y;
+        int xMovement = (int) rbody.velocity.x;
+        emulatedII.up = yMovement;
+        emulatedII.right = xMovement;
+
+        emulatedII.shootUp = 0;
+        emulatedII.shootRight = 0;
+        if (agressive)
+        {
+            emulatedII.shootUp = yMovement;
+            emulatedII.shootRight = xMovement;
+        }
+
+        currentGun.CustomUpdate(emulatedII);
+        headScript.CustomUpdate(emulatedII);
     }
 
     void FixedUpdate()
@@ -69,7 +93,10 @@ public class EnemyScript : MonoBehaviour
 
         moveDir = closestEnemy.position - transform.position;
         if (moveDir.magnitude < holdDistance)
+        {
             moveDir *= -1;
+            agressive = true;       
+        }
 
         moveDir.Normalize();
         moveDir += evadeDir;
@@ -92,7 +119,7 @@ public class EnemyScript : MonoBehaviour
             }
         }
 
-        if ((player.position - transform.position).sqrMagnitude < minDist)
+        if (player != null && (player.position - transform.position).sqrMagnitude < minDist)
         {
             closestEnemy = player.gameObject;
             minDist = (player.position - transform.position).sqrMagnitude;

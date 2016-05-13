@@ -37,7 +37,6 @@ public class BulletScript : MonoBehaviour
         spawnTime = Time.time;
     }
 
-
     void Update()
     {
         if (destroyType == DestroyType.TIME && Time.time - spawnTime >= timeToDestroy)
