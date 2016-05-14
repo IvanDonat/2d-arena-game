@@ -6,6 +6,7 @@ public class Tile : MonoBehaviour
 
     public bool destroyable = true;
     public bool scaleHealthWithSize = true;
+    private float maxHealth;
     public float health = 15f;
     public ParticleSystem destroyParticles;
     public Transform drop;
@@ -15,6 +16,7 @@ public class Tile : MonoBehaviour
     {
         if (scaleHealthWithSize)
             health *= (transform.localScale.x + transform.localScale.x) / 2f;
+        maxHealth = health;
     }
 
 
@@ -26,6 +28,7 @@ public class Tile : MonoBehaviour
     public void TakeDamage(float dmg)
     {
         health -= dmg;
+        health = Mathf.Clamp(health, 0, maxHealth);
 
         GameObject tileDmg = GameObject.Instantiate(Resources.Load(tileDamagePath), transform.position, Quaternion.Euler(0, 0, Random.Range(0, 4) * 90)) as GameObject;
         tileDmg.transform.parent = transform;
@@ -41,7 +44,8 @@ public class Tile : MonoBehaviour
 
             if (drop)
             {
-                GameObject.Instantiate(drop, transform.position, transform.rotation);
+                GameObject dr = Instantiate(Resources.Load("Drops/MeteorDebris", typeof(GameObject)), transform.position, Quaternion.identity) as GameObject;
+                dr.transform.localScale = transform.localScale;
             }
 
             Destroy(gameObject);

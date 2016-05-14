@@ -14,12 +14,14 @@ public class PlayerScript : MonoBehaviour
     private PlayerHeadScript headScript;
     public GunScript[] guns;
     private GunScript currentGun;
-    public GUIController gui;
+    private GUIController gui;
     private GameManager gm;
 
     public ParticleSystem particleDeath;
 
-    private float health = 100;
+    [System.NonSerialized]
+    public float maxHealth;
+    public float health = 100;
 
     public AudioSource audioHitWall;
 
@@ -33,6 +35,9 @@ public class PlayerScript : MonoBehaviour
         rbody = GetComponent<Rigidbody2D>();
         headScript = GetComponentInChildren<PlayerHeadScript>();
         gm = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
+        gui = GameObject.FindGameObjectWithTag("GUI").GetComponent<GUIController>();
+
+        maxHealth = health;
 
         currentGun = guns[0];
     }
@@ -126,6 +131,7 @@ public class PlayerScript : MonoBehaviour
     public void TakeDamage(float dmg)
     {
         health -= dmg;
+        health = Mathf.Clamp(health, 0, maxHealth);
         gui.SetHP((int)health);
 
         if (health <= 0)

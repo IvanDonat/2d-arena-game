@@ -20,7 +20,10 @@ public class EnemyScript : MonoBehaviour
     public GunScript[] guns;
 
     public float moveForce = 0.7f;
-    private float health = 75;
+
+    [System.NonSerialized]
+    public float maxHealth;
+    public float health = 75;
 
     private float holdDistance = 1;
 
@@ -44,6 +47,8 @@ public class EnemyScript : MonoBehaviour
         if(GameObject.FindGameObjectWithTag("Player"))
             player = GameObject.FindGameObjectWithTag("Player").transform;
         gm = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
+
+        maxHealth = health;
 
         holdDistance += Random.Range(0f, 4f);
 
@@ -172,6 +177,7 @@ public class EnemyScript : MonoBehaviour
     public void TakeDamage(float dmg)
     {
         health -= dmg;
+        health = Mathf.Clamp(health, 0, maxHealth);
 
         if (health <= 0)
         {   
@@ -184,7 +190,7 @@ public class EnemyScript : MonoBehaviour
 
             GameObject debris = Instantiate(Resources.Load("Drops/Debris", typeof(GameObject)), transform.position, Quaternion.identity) as GameObject;
             debris.transform.localScale = new Vector3(0.8f, 0.8f, 1f);
-            debris.GetComponent<WeaponDrop>().SetWeapon(currentGun.transform.name);
+            debris.GetComponent<Drop>().SetWeapon(currentGun.transform.name);
 
             Destroy(gameObject);
         }

@@ -167,7 +167,7 @@ public class GameManager : MonoBehaviour
                         instance.GetComponent<Tile>().destroyable = false;
                     tiles[x, y] = instance;
                 }
-                if (rr >= 90)
+               /* if (rr >= 90)
                 {
                     GameObject instance = Instantiate(Resources.Load("Arena/Tiles/Crate", typeof(GameObject))) as GameObject;
                     instance.transform.position = new Vector2(x + offset_w + Random.Range(-1, 1), -y + offset_h + Random.Range(-1, 1));
@@ -178,7 +178,7 @@ public class GameManager : MonoBehaviour
                     if (immutable)
                         instance.GetComponent<Tile>().destroyable = false;
                     tiles[x, y] = instance;
-                }
+                } */
             }
         }
     }
