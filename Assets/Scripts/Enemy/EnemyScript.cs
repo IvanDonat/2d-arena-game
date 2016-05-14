@@ -181,6 +181,8 @@ public class EnemyScript : MonoBehaviour
 
         if (health <= 0)
         {   
+            GameObject.FindGameObjectWithTag("GUI").SendMessage("PushNotification", "-1 enemy");
+
             if (particleDeath)
             {           
                 particleDeath.transform.parent = null;

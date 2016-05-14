@@ -134,8 +134,14 @@ public class PlayerScript : MonoBehaviour
         health = Mathf.Clamp(health, 0, maxHealth);
         gui.SetHP((int)health);
 
+        if (dmg < 0)
+        {
+            gui.PushNotification("Healed for " + -(int)dmg);
+        }
+
         if (health <= 0)
         {
+            gui.PushNotification("You died");
             if (particleDeath)
             {           
                 particleDeath.transform.parent = null;
@@ -156,6 +162,7 @@ public class PlayerScript : MonoBehaviour
             if (gs.transform.name == wep)
             {
                 currentGun = gs;
+                gui.PushNotification("Picked up: " + gs.transform.name);
                 return true;
             }
         }
