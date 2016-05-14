@@ -49,31 +49,23 @@ public class BulletScript : MonoBehaviour
     {
         if (destroyType == DestroyType.HIT)
         {
-            soundDelete.transform.parent = null;
-            soundDelete.gameObject.AddComponent<DestroyAfterTime>();
-            soundDelete.Play();
-
-            destroyParticles.transform.parent = null;
-            destroyParticles.gameObject.AddComponent<DestroyAfterTime>();
-            destroyParticles.Play();
-
-
             if (!areaDamage)
             {
+                soundDelete.transform.parent = null;
+                soundDelete.gameObject.AddComponent<DestroyAfterTime>();
+                soundDelete.Play();
+
+                destroyParticles.transform.parent = null;
+                destroyParticles.gameObject.AddComponent<DestroyAfterTime>();
+                destroyParticles.Play();
+
                 c.gameObject.SendMessage("TakeDamage", dmg, SendMessageOptions.DontRequireReceiver);
+                Destroy(gameObject);
             }
             else
             {
-                ArrayList tiles = gm.GetAround(c.transform.position.x, c.transform.position.y, areaRadius);
-                // @TODO + add entities around it to take damage
-
-                foreach (GameObject tile in tiles)
-                {
-                    tile.gameObject.SendMessage("TakeDamage", dmg, SendMessageOptions.DontRequireReceiver);
-                }
+                Explode();
             }
-
-            Destroy(gameObject);
         }
     }
 
@@ -95,11 +87,42 @@ public class BulletScript : MonoBehaviour
         else
         {
             ArrayList tiles = gm.GetAround(transform.position.x, transform.position.y, areaRadius);
-            // @TODO + add entities around it to take damage
-
             foreach (GameObject tile in tiles)
             {
+                Vector2 deltaPos = transform.position - tile.transform.position;
+                float calculatedDamage = dmg - (deltaPos.magnitude / areaRadius)*dmg;
                 tile.gameObject.SendMessage("TakeDamage", dmg, SendMessageOptions.DontRequireReceiver);
+            }
+
+            if (transform.tag == "PlayerBullet")
+            {
+                var enemies = gm.GetEnemies();
+                foreach(GameObject en in enemies)
+                {
+                    Vector2 deltaPos = transform.position - en.transform.position;
+                    if (deltaPos.sqrMagnitude <= areaRadius * areaRadius)
+                    {
+                        float calculatedDamage = dmg - (deltaPos.magnitude / areaRadius)*dmg;
+                        en.SendMessage("TakeDamage", calculatedDamage, SendMessageOptions.RequireReceiver);
+                    }
+                }
+            }
+            else if (transform.tag == "EnemyBullet")
+            {
+                GameObject player = GameObject.FindGameObjectWithTag("Player");
+                if (player)
+                {
+                    Vector2 deltaPos = transform.position - player.transform.position;
+                    if (deltaPos.sqrMagnitude <= areaRadius * areaRadius)
+                    {
+                        float calculatedDamage = dmg - (deltaPos.magnitude / areaRadius)*dmg;
+                        player.SendMessage("TakeDamage", calculatedDamage, SendMessageOptions.RequireReceiver);
+                    }
+                }
+            }
+            else
+            {
+                Debug.LogError("Untagged bullet/projectile, BulletScript.cs");
             }
         }
 

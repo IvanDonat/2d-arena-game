@@ -13,6 +13,8 @@ public class PlayerScript : MonoBehaviour
     private Rigidbody2D rbody;
     private PlayerHeadScript headScript;
     public GunScript currentGun;
+    public GUIController gui;
+    private GameManager gm;
 
     public ParticleSystem particleDeath;
 
@@ -20,12 +22,16 @@ public class PlayerScript : MonoBehaviour
 
     public AudioSource audioHitWall;
 
+    private float enemyCountLastUpdated = -5f;
+    private float enemyCountUpdateInterval = 1f;
+
 
 
     void Awake()
     {
         rbody = GetComponent<Rigidbody2D>();
         headScript = GetComponentInChildren<PlayerHeadScript>();
+        gm = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
     }
 
     void Start()
@@ -35,8 +41,14 @@ public class PlayerScript : MonoBehaviour
 
     void Update()
     {
-        InputInfo ii = GetInput();
+        if (Time.time - enemyCountLastUpdated >= enemyCountUpdateInterval)
+        {
+            gui.enemyCount = gm.GetEnemies().Count;
 
+            enemyCountLastUpdated = Time.time;
+        }
+
+        InputInfo ii = GetInput();
         currentGun.CustomUpdate(ii);
         headScript.CustomUpdate(ii);
     }
@@ -101,6 +113,8 @@ public class PlayerScript : MonoBehaviour
     public void TakeDamage(float dmg)
     {
         health -= dmg;
+        gui.health = (int)health;
+        gui.health = Mathf.Clamp(gui.health, 0, int.MaxValue);
 
         if (health <= 0)
         {

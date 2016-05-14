@@ -1,18 +1,27 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+public enum EnemyState
+{
+    ROAMING,
+    AGRESSIVE,
+    RETREATING
+};
+
 public class EnemyScript : MonoBehaviour
 {
 
     private Rigidbody2D rbody;
     private EnemyHeadScript headScript;
-    public GunScript currentGun;
     public ParticleSystem particleDeath;
     private GameManager gm;
 
+    public GunScript currentGun;
+    public GunScript[] guns;
+
     private float health = 100;
 
-    private float holdDistance = 3;
+    private float holdDistance = 1;
 
     public AudioSource audioHitWall;
 
@@ -23,7 +32,7 @@ public class EnemyScript : MonoBehaviour
     private float evadeDirResetInterval = 3;
     private Vector2 evadeDir = Vector2.zero;
 
-    private bool agressive = false;
+    private EnemyState state;
 
     private Light myLight;
     private float lastLookedForPlayer;
@@ -37,6 +46,8 @@ public class EnemyScript : MonoBehaviour
         gm = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
 
         holdDistance += Random.Range(0f, 4f);
+
+        currentGun = guns[Random.Range(0, guns.Length-1)];
     }
 
     void Update()
@@ -76,10 +87,16 @@ public class EnemyScript : MonoBehaviour
 
         emulatedII.shootUp = 0;
         emulatedII.shootRight = 0;
-        if (agressive)
+
+        GameObject closestEnemy = GetClosestEnemy();
+        if (closestEnemy != null)
         {
-            emulatedII.shootUp = yMovement;
-            emulatedII.shootRight = xMovement;
+            Vector2 aimDir = closestEnemy.transform.position - transform.position;
+            if (state == EnemyState.AGRESSIVE)
+            {
+                emulatedII.shootUp = (int) aimDir.y;
+                emulatedII.shootRight = (int) aimDir.x;
+            }
         }
 
         currentGun.CustomUpdate(emulatedII);
@@ -88,14 +105,38 @@ public class EnemyScript : MonoBehaviour
 
     void FixedUpdate()
     {
-        Transform closestEnemy = GetClosestEnemy().transform;
+        //Transform closestEnemy = GetClosestEnemy().transform;
+        Transform closestEnemy = (player != null) ? player : null;
+        if (closestEnemy == null)
+            state = EnemyState.ROAMING;
+        else
+        {
+            if ((closestEnemy.position - transform.position).sqrMagnitude <= 10 * 10)
+            {
+                state = EnemyState.AGRESSIVE;
+            }
+            else
+            {
+                state = EnemyState.ROAMING;
+            }
+        }
+
         Vector2 moveDir = Vector2.zero;
 
-        moveDir = closestEnemy.position - transform.position;
-        if (moveDir.magnitude < holdDistance)
+
+        if (state == EnemyState.AGRESSIVE || state == EnemyState.RETREATING)
         {
-            moveDir *= -1;
-            agressive = true;       
+
+            moveDir = closestEnemy.position - transform.position;
+            if (moveDir.magnitude < holdDistance)
+            {
+                moveDir *= -1;
+                state = EnemyState.RETREATING;
+            }
+        }
+        else if(state == EnemyState.ROAMING)
+        {
+            // the random evadeDir addition will do just fine
         }
 
         moveDir.Normalize();

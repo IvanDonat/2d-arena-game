@@ -15,6 +15,7 @@ public class GameManager : MonoBehaviour
     // true if main menu, immutable tiles
     public bool immutable = false;
 
+    public int numEnemies = 7;
     private ArrayList enemies;
 
     void Start()
@@ -162,8 +163,7 @@ public class GameManager : MonoBehaviour
         int offset_w = -Mathf.FloorToInt(width / 2);
         int offset_h = Mathf.FloorToInt(height / 2);
 
-        int num_enemies = 15;
-        for (int i = 0; i < num_enemies; i++)
+        for (int i = 0; i < numEnemies; i++)
         {
             Vector2 randomPos = new Vector2(Random.Range(2, width - 2) + offset_w, -Random.Range(2, height - 2) + offset_h);
             GameObject enemy = Instantiate(Resources.Load("Enemy"), randomPos, Quaternion.identity) as GameObject;
