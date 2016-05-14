@@ -16,7 +16,7 @@ public class EnemyScript : MonoBehaviour
     public ParticleSystem particleDeath;
     private GameManager gm;
 
-    private GunScript currentGun;
+    public GunScript currentGun;
     public GunScript[] guns;
 
     private float health = 100;
@@ -34,18 +34,20 @@ public class EnemyScript : MonoBehaviour
 
     private EnemyState state;
 
+    private Light myLight;
     private float lastLookedForPlayer;
 
     void Awake()
     {
         rbody = GetComponent<Rigidbody2D>();
         headScript = GetComponentInChildren<EnemyHeadScript>();
+        myLight = GetComponentInChildren<Light>();
         player = GameObject.FindGameObjectWithTag("Player").transform;
         gm = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
 
         holdDistance += Random.Range(0f, 4f);
 
-        currentGun = guns[Random.Range(0, guns.Length)];
+        currentGun = guns[Random.Range(0, guns.Length-1)];
     }
 
     void Update()
@@ -139,7 +141,7 @@ public class EnemyScript : MonoBehaviour
 
         moveDir.Normalize();
         moveDir += evadeDir;
-        rbody.AddForce(moveDir.normalized, ForceMode2D.Impulse);
+        rbody.AddForce(moveDir, ForceMode2D.Impulse);
     }
 
     GameObject GetClosestEnemy()
@@ -182,18 +184,5 @@ public class EnemyScript : MonoBehaviour
 
             Destroy(gameObject);
         }
-    }
-
-    public void SetWeapon(string wep)
-    {
-        foreach (GunScript gs in guns)
-        {
-            if (gs.transform.name == wep)
-            {
-                currentGun = gs;
-                return;
-            }
-        }
-        Debug.LogWarning("GunScript SetWeapon(string), no such gun found: " + wep);
     }
 }

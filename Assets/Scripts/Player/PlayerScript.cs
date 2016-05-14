@@ -12,8 +12,7 @@ public class PlayerScript : MonoBehaviour
 
     private Rigidbody2D rbody;
     private PlayerHeadScript headScript;
-    public GunScript[] guns;
-    private GunScript currentGun;
+    public GunScript currentGun;
     public GUIController gui;
     private GameManager gm;
 
@@ -33,8 +32,6 @@ public class PlayerScript : MonoBehaviour
         rbody = GetComponent<Rigidbody2D>();
         headScript = GetComponentInChildren<PlayerHeadScript>();
         gm = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
-
-        currentGun = guns[0];
     }
 
     void Start()
@@ -130,18 +127,5 @@ public class PlayerScript : MonoBehaviour
 
             Destroy(gameObject);
         }
-    }
-
-    public void SetWeapon(string wep)
-    {
-        foreach (GunScript gs in guns)
-        {
-            if (gs.transform.name == wep)
-            {
-                currentGun = gs;
-                return;
-            }
-        }
-        Debug.LogWarning("GunScript SetWeapon(string), no such gun found: " + wep);
     }
 }

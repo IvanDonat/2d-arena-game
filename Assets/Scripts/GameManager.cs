@@ -10,19 +10,13 @@ public class GameManager : MonoBehaviour
 
     private int groupW = 8, groupH = 8;
     private GameObject[,] groupParent;
+    public GameObject combinedMesh;
 
     // true if main menu, immutable tiles
     public bool immutable = false;
 
     public int numEnemies = 7;
     private ArrayList enemies;
-
-    void Awake()
-    {
-        enemies = new ArrayList();
-        foreach(GameObject en in GameObject.FindGameObjectsWithTag("Enemy"))
-            enemies.Add(en);
-    }
 
     void Start()
     {
@@ -150,7 +144,7 @@ public class GameManager : MonoBehaviour
                         instance.GetComponent<Tile>().destroyable = false;
                     tiles[x, y] = instance;
                 }
-                if (rr >= 90)
+                if (rr >= 99)
                 {
                     GameObject instance = Instantiate(Resources.Load("Arena/Tiles/Crate", typeof(GameObject))) as GameObject;
                     instance.transform.position = new Vector2(x + offset_w, -y + offset_h);
@@ -165,6 +159,7 @@ public class GameManager : MonoBehaviour
 
     void SpawnPlayerAndEnemies()
     {
+        enemies = new ArrayList();
         int offset_w = -Mathf.FloorToInt(width / 2);
         int offset_h = Mathf.FloorToInt(height / 2);
 
