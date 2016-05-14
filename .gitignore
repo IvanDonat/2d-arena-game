@@ -24,3 +24,5 @@ ExportedObj/
 
 # Unity3D Generated File On Crash Reports
 sysinfo.txt
+Release/Game_Data/Mono/etc/mono/mconfig/config.xml
+Release/Release.zip
