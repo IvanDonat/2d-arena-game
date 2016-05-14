@@ -15,7 +15,7 @@ public class SpriteAnimation : MonoBehaviour {
         spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
-	void Update () {
+    void Update () {
         if (Time.time - lastTimeSwapped >= swapInterval)
         {
             currIndex++;
@@ -25,5 +25,5 @@ public class SpriteAnimation : MonoBehaviour {
             spriteRenderer.sprite = sprites[currIndex];
             lastTimeSwapped = Time.time;
         }
-	}
+    }
 }
