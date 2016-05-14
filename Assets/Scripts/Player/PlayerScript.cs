@@ -44,9 +44,12 @@ public class PlayerScript : MonoBehaviour
 
     void Update()
     {
+        if (gm.GetPaused())
+            return;
+        
         if (Time.time - enemyCountLastUpdated >= enemyCountUpdateInterval)
         {
-            gui.enemyCount = gm.GetEnemies().Count;
+            gui.SetEnemyCount(gm.GetEnemies().Count);
 
             enemyCountLastUpdated = Time.time;
         }
@@ -116,8 +119,7 @@ public class PlayerScript : MonoBehaviour
     public void TakeDamage(float dmg)
     {
         health -= dmg;
-        gui.health = (int)health;
-        gui.health = Mathf.Clamp(gui.health, 0, int.MaxValue);
+        gui.SetHP((int)health);
 
         if (health <= 0)
         {
@@ -132,16 +134,19 @@ public class PlayerScript : MonoBehaviour
         }
     }
 
-    public void SetWeapon(string wep)
-    {
+    public bool SetWeapon(string wep)
+    {        
+        if (wep == currentGun.transform.name)
+            return false;
         foreach (GunScript gs in guns)
         {
             if (gs.transform.name == wep)
             {
                 currentGun = gs;
-                return;
+                return true;
             }
         }
         Debug.LogWarning("GunScript SetWeapon(string), no such gun found: " + wep);
+        return false;
     }
 }

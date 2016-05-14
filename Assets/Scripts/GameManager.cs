@@ -17,6 +17,8 @@ public class GameManager : MonoBehaviour
     public int numEnemies = 7;
     private ArrayList enemies;
 
+    private bool paused = false;
+
     void Awake()
     {
         enemies = new ArrayList();
@@ -26,14 +28,25 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
-        GetTiles();
+        tiles = new GameObject[width, height];
         GenerateArena();
         SpawnPlayerAndEnemies();
     }
 
-    private void GetTiles()
+    void Update()
     {
-        tiles = new GameObject[width, height];
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            paused = !paused;
+            if (paused)
+            {
+                Time.timeScale = 0;
+            }
+            else
+            {
+                Time.timeScale = 1;
+            }
+        }
     }
 
     void GenerateArena()
@@ -213,5 +226,10 @@ public class GameManager : MonoBehaviour
         foreach (GameObject t in toRemove)
             enemies.Remove(t);
         return enemies;
+    }
+
+    public bool GetPaused()
+    {
+        return paused;
     }
 }

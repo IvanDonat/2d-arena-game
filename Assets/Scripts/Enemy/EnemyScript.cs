@@ -19,7 +19,8 @@ public class EnemyScript : MonoBehaviour
     private GunScript currentGun;
     public GunScript[] guns;
 
-    private float health = 100;
+    public float moveForce = 0.7f;
+    private float health = 75;
 
     private float holdDistance = 1;
 
@@ -28,7 +29,7 @@ public class EnemyScript : MonoBehaviour
     private Transform player;
     private ArrayList enemies;
 
-    private float evadeDirReset;
+    private float evadeDirReset = -5;
     private float evadeDirResetInterval = 3;
     private Vector2 evadeDir = Vector2.zero;
 
@@ -40,7 +41,8 @@ public class EnemyScript : MonoBehaviour
     {
         rbody = GetComponent<Rigidbody2D>();
         headScript = GetComponentInChildren<EnemyHeadScript>();
-        player = GameObject.FindGameObjectWithTag("Player").transform;
+        if(GameObject.FindGameObjectWithTag("Player"))
+            player = GameObject.FindGameObjectWithTag("Player").transform;
         gm = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
 
         holdDistance += Random.Range(0f, 4f);
@@ -139,7 +141,7 @@ public class EnemyScript : MonoBehaviour
 
         moveDir.Normalize();
         moveDir += evadeDir;
-        rbody.AddForce(moveDir.normalized, ForceMode2D.Impulse);
+        rbody.AddForce(moveDir.normalized * moveForce, ForceMode2D.Impulse);
     }
 
     GameObject GetClosestEnemy()
@@ -184,16 +186,19 @@ public class EnemyScript : MonoBehaviour
         }
     }
 
-    public void SetWeapon(string wep)
+    public bool SetWeapon(string wep)
     {
+        if (wep == currentGun.transform.name)
+            return false;
         foreach (GunScript gs in guns)
         {
             if (gs.transform.name == wep)
             {
                 currentGun = gs;
-                return;
+                return true;
             }
         }
         Debug.LogWarning("GunScript SetWeapon(string), no such gun found: " + wep);
+        return false;
     }
 }

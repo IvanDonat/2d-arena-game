@@ -26,12 +26,23 @@ public class WeaponDrop : MonoBehaviour {
 
     void OnTriggerEnter2D(Collider2D c)
     {
+        // Doesn't destroy if weapon is the same as currently wielded
+
         if (c.isTrigger)
             return;
         if (c.tag == "Enemy" || c.tag == "Player")
         {
-            c.transform.BroadcastMessage("SetWeapon", wep, SendMessageOptions.RequireReceiver);
-            Destroy(gameObject);
+            if (c.tag == "Enemy")
+            {
+                if(c.GetComponent<EnemyScript>().SetWeapon(wep))
+                    Destroy(gameObject);
+            }
+            if(c.tag == "Player")
+            {
+                if(c.GetComponent<PlayerScript>().SetWeapon(wep))
+                    Destroy(gameObject);
+            }
+
         }
     }
 
