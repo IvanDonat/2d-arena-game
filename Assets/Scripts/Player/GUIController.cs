@@ -31,13 +31,13 @@ public class GUIController : MonoBehaviour {
     private float lastChangedNotification;
 
 	// Use this for initialization
-	void Start () {
+    void Start () {
         initialHPColor = guiHealth.color;
         pausedGUI.gameObject.SetActive(false);
         notifications = new ArrayList();
-	}
+    }
 	
-	void Update () {
+    void Update () {
         guiHealth.text = "HEALTH: " + health.ToString();
         guiHealth.color = Color.Lerp(guiHealth.color, initialHPColor, Time.deltaTime * 5f);
 
@@ -72,7 +72,7 @@ public class GUIController : MonoBehaviour {
             guiNotification.text = "";
             oldNotification = guiNotification.text;
         }
-	}
+    }
 
     public void SetPaused(bool p)
     {
