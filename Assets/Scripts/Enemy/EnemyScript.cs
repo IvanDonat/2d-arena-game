@@ -182,6 +182,10 @@ public class EnemyScript : MonoBehaviour
                 particleDeath.Play();
             }
 
+            GameObject debris = Instantiate(Resources.Load("Drops/Debris", typeof(GameObject)), transform.position, Quaternion.identity) as GameObject;
+            debris.transform.localScale = new Vector3(0.8f, 0.8f, 1f);
+            debris.GetComponent<WeaponDrop>().SetWeapon(currentGun.transform.name);
+
             Destroy(gameObject);
         }
     }

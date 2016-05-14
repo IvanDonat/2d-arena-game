@@ -6,7 +6,7 @@ public class GameManager : MonoBehaviour
 
     public bool createTileBackground = true;
     public int width = 48, height = 48;
-    private GameObject[,] tiles;
+    private GameObject[,] tiles; // this exists solely for area damage
 
     private int groupW = 8, groupH = 8;
     private GameObject[,] groupParent;
@@ -149,15 +149,19 @@ public class GameManager : MonoBehaviour
         }
 
         // Generate Tiles
-        for (int y = 1; y < height - 1; y++)
+        for (int y = 4; y < height - 5; y+=3)
         {
-            for (int x = 1; x < width - 1; x++)
+            for (int x = 4; x < width - 5; x+=3)
             {
                 int rr = Random.Range(0, 100);
                 if (rr <= 10)
                 {
-                    GameObject instance = Instantiate(Resources.Load("Arena/Tiles/BlueBlockade", typeof(GameObject))) as GameObject;
-                    instance.transform.position = new Vector2(x + offset_w, -y + offset_h);
+                    GameObject instance = Instantiate(Resources.Load("Arena/Tiles/Meteor", typeof(GameObject))) as GameObject;
+                    instance.transform.position = new Vector2(x + offset_w + Random.Range(-1, 1), -y + offset_h + Random.Range(-1, 1));
+
+                    float scale = Random.Range(0.3f, 3f);
+                    instance.transform.localScale = new Vector3(scale, scale, 1);
+
                     instance.transform.parent = tileParent.transform;
                     if (immutable)
                         instance.GetComponent<Tile>().destroyable = false;
@@ -166,8 +170,11 @@ public class GameManager : MonoBehaviour
                 if (rr >= 90)
                 {
                     GameObject instance = Instantiate(Resources.Load("Arena/Tiles/Crate", typeof(GameObject))) as GameObject;
-                    instance.transform.position = new Vector2(x + offset_w, -y + offset_h);
-                    instance.transform.parent = tileParent.transform;
+                    instance.transform.position = new Vector2(x + offset_w + Random.Range(-1, 1), -y + offset_h + Random.Range(-1, 1));
+
+                    float scale = Random.Range(0.8f, 1.2f);
+                    instance.transform.localScale = new Vector3(scale, scale, 1);
+
                     if (immutable)
                         instance.GetComponent<Tile>().destroyable = false;
                     tiles[x, y] = instance;

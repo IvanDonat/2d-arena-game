@@ -10,7 +10,7 @@ public class WeaponDrop : MonoBehaviour {
     private Vector2 initialPos;
     private float timeOffset;
 
-    void Awake()
+    void Start()
     {
         initialPos = transform.position;
         timeOffset = Random.Range(0f, 1f);
@@ -44,6 +44,11 @@ public class WeaponDrop : MonoBehaviour {
             }
 
         }
+    }
+
+    public void SetWeapon(string s)
+    {
+        wep = s;
     }
 
 }

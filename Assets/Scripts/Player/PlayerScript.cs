@@ -24,7 +24,7 @@ public class PlayerScript : MonoBehaviour
     public AudioSource audioHitWall;
 
     private float enemyCountLastUpdated = -5f;
-    private float enemyCountUpdateInterval = 1f;
+    private float enemyCountUpdateInterval = .2f;
 
 
 
