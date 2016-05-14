@@ -3,10 +3,12 @@ using System.Collections;
 using UnityEngine.UI;
 
 public class GUIController : MonoBehaviour {
+    public Transform pausedGUI;
+    private bool paused = false;
+
     public Text guiHealth;
     private Color initialHPColor;
     private int health = 100;
-
 
     public Text guiEnemyCount; 
     private int enemyCount = -1;
@@ -14,6 +16,7 @@ public class GUIController : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
         initialHPColor = guiHealth.color;
+        pausedGUI.gameObject.SetActive(false);
 	}
 	
 	void Update () {
@@ -23,6 +26,12 @@ public class GUIController : MonoBehaviour {
         guiEnemyCount.text = "ENEMIES: " + enemyCount.ToString();
         guiEnemyCount.color = Color.Lerp(guiEnemyCount.color, initialHPColor, Time.deltaTime * 5f);
 	}
+
+    public void SetPaused(bool p)
+    {
+        paused = p;
+        pausedGUI.gameObject.SetActive(paused);
+    }
 
     public void SetHP(int hp)
     {

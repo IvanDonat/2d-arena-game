@@ -45,7 +45,14 @@ public class PlayerScript : MonoBehaviour
     void Update()
     {
         if (gm.GetPaused())
+        {
+            gui.SetPaused(true);
             return;
+        }
+        else
+        {
+            gui.SetPaused(false);
+        }
         
         if (Time.time - enemyCountLastUpdated >= enemyCountUpdateInterval)
         {
