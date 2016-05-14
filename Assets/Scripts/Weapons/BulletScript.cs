@@ -47,6 +47,8 @@ public class BulletScript : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D c)
     {
+        if (c.isTrigger)
+            return;
         if (destroyType == DestroyType.HIT)
         {
             if (!areaDamage)
@@ -91,7 +93,7 @@ public class BulletScript : MonoBehaviour
             {
                 Vector2 deltaPos = transform.position - tile.transform.position;
                 float calculatedDamage = dmg - (deltaPos.magnitude / areaRadius)*dmg;
-                tile.gameObject.SendMessage("TakeDamage", dmg, SendMessageOptions.DontRequireReceiver);
+                tile.gameObject.SendMessage("TakeDamage", calculatedDamage, SendMessageOptions.DontRequireReceiver);
             }
 
             if (transform.tag == "PlayerBullet")

@@ -59,7 +59,7 @@ public class GunScript : MonoBehaviour
 
     private void Shoot()
     {
-        GameObject bullet = GameObject.Instantiate(bulletPrefab, transform.position + transform.right * 0.5f, transform.rotation) as GameObject;
+        GameObject.Instantiate(bulletPrefab, transform.position + transform.right * 0.5f, transform.rotation);
         lastTimeShot = Time.time;
         holdTime = Time.time;
     }
