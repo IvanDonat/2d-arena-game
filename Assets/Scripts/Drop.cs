@@ -6,6 +6,8 @@ public class Drop : MonoBehaviour {
     public string[] weaponNames;
     private string wep;
 
+    public AudioSource audio;
+
     public int restoreHealth = 0;
 
     public TextMesh text;
@@ -48,8 +50,10 @@ public class Drop : MonoBehaviour {
                     used = true;
                     c.transform.BroadcastMessage("TakeDamage", -restoreHealth, SendMessageOptions.RequireReceiver);
                 }
-                if(used)
+                if (used)
+                {
                     Destroy(gameObject);
+                }
             }
             if(c.tag == "Player")
             {
@@ -63,8 +67,14 @@ public class Drop : MonoBehaviour {
                     used = true;
                     c.transform.BroadcastMessage("TakeDamage", -restoreHealth, SendMessageOptions.RequireReceiver);
                 }
-                if(used)
+                if (used)
+                {
+                    audio.transform.parent = null;
+                    audio.Play();
+                    audio.gameObject.AddComponent<DestroyAfterTime>();
+
                     Destroy(gameObject);
+                }
             }
         }
     }
