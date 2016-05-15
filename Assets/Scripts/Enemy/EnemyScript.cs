@@ -26,7 +26,7 @@ public class EnemyScript : MonoBehaviour
 
     private float holdDistance = 1;
 
-    public AudioSource audioHitWall;
+    public AudioSource deathSound;   
 
     private Transform player;
     private ArrayList enemies;
@@ -162,6 +162,13 @@ public class EnemyScript : MonoBehaviour
                 particleDeath.transform.parent = null;
                 particleDeath.gameObject.AddComponent<DestroyAfterTime>();
                 particleDeath.Play();
+            }
+
+            if (deathSound)
+            {
+                deathSound.transform.parent = null;
+                deathSound.gameObject.AddComponent<DestroyAfterTime>();
+                deathSound.Play();
             }
 
             GameObject debris = Instantiate(Resources.Load("Drops/Debris", typeof(GameObject)), transform.position, Quaternion.identity) as GameObject;
