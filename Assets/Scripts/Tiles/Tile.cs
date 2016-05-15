@@ -5,7 +5,6 @@ public class Tile : MonoBehaviour
 {
 
     public bool destroyable = true;
-    public bool scaleHealthWithSize = true;
     private float maxHealth;
     public float health = 15f;
     public ParticleSystem destroyParticles;
@@ -14,8 +13,6 @@ public class Tile : MonoBehaviour
 
     void Start()
     {
-        if (scaleHealthWithSize)
-            health *= (transform.localScale.x + transform.localScale.x) / 2f;
         maxHealth = health;
     }
 

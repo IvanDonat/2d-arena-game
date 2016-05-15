@@ -88,11 +88,15 @@ public class BulletScript : MonoBehaviour
         }
         else
         {
-            ArrayList tiles = gm.GetAround(transform.position.x, transform.position.y, areaRadius);
+            ArrayList tiles = gm.GetTiles();
             foreach (GameObject tile in tiles)
             {
+                if ((tile.transform.position - transform.position).sqrMagnitude > areaRadius * areaRadius)
+                    continue;
+                
                 Vector2 deltaPos = transform.position - tile.transform.position;
-                float calculatedDamage = dmg - (deltaPos.magnitude / areaRadius)*dmg;
+                float tileRadius = (tile.transform.localScale.x + tile.transform.localScale.y) / 2;
+                float calculatedDamage = dmg - ((deltaPos.magnitude - tileRadius) / areaRadius)*dmg;
                 tile.gameObject.SendMessage("TakeDamage", calculatedDamage, SendMessageOptions.DontRequireReceiver);
             }
 

@@ -18,7 +18,8 @@ public class Drop : MonoBehaviour {
         initialPos = transform.position;
         timeOffset = Random.Range(0f, 1f);
 
-        wep = weaponNames[Random.Range(0, weaponNames.Length)];
+        if(wep == null || wep.Length == 0)
+            wep = weaponNames[Random.Range(0, weaponNames.Length)];
         text.text = wep.Substring(0, 1);
     }
 

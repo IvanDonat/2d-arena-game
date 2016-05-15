@@ -6,13 +6,13 @@ public class GameManager : MonoBehaviour
 
     public bool createTileBackground = true;
     public int width = 48, height = 48;
-    private GameObject[,] tiles; // this exists solely for area damage
+    //private GameObject[,] tiles; // this exists solely for area damage
+    private ArrayList tiles;
 
     private int groupW = 8, groupH = 8;
-    private GameObject[,] groupParent;
+    //private GameObject[,] groupParent;
 
-    // true if main menu, immutable tiles
-    public bool immutable = false;
+    public bool pausable = false;
 
     public int numEnemies = 7;
     private ArrayList enemies;
@@ -28,14 +28,14 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
-        tiles = new GameObject[width, height];
+        tiles = new ArrayList();
         GenerateArena();
         SpawnPlayerAndEnemies();
     }
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Escape))
+        if (pausable && Input.GetKeyDown(KeyCode.Escape))
         {
             paused = !paused;
             if (paused)
@@ -56,8 +56,6 @@ public class GameManager : MonoBehaviour
         GameObject tileParent = new GameObject("Tiles");
         tileParent.transform.parent = transform;
 
-        groupParent = new GameObject[groupW, groupH];
-
         // Create background
         int offset_w = -Mathf.FloorToInt(width / 2);
         int offset_h = Mathf.FloorToInt(height / 2);
@@ -72,19 +70,12 @@ public class GameManager : MonoBehaviour
             {
                 for (int x = 0; x < width; x++)
                 {
-                    if (groupParent[x / groupW, y / groupH] == null)
-                    {
-                        groupParent[x / groupW, y / groupH] = new GameObject("Group " + x / groupW + " " + y / groupH);
-                        groupParent[x / groupW, y / groupH].transform.parent = bgParent.transform;
-                    }
-
                     GameObject instance;
                     if (!(x == 0 || y == 0 || x == width - 1 || y == height - 1))
                     {
                         instance = Instantiate(Resources.Load(floor, typeof(GameObject))) as GameObject;
                         instance.transform.position = new Vector2(x + offset_w, -y + offset_h);
-                        //   instance.transform.parent = bgParent.transform;
-                        instance.transform.parent = groupParent[x / groupW, y / groupH].transform;
+                        instance.transform.parent = bgParent.transform;
                     }
                 }
             }
@@ -163,22 +154,8 @@ public class GameManager : MonoBehaviour
                     instance.transform.localScale = new Vector3(scale, scale, 1);
 
                     instance.transform.parent = tileParent.transform;
-                    if (immutable)
-                        instance.GetComponent<Tile>().destroyable = false;
-                    tiles[x, y] = instance;
+                    tiles.Add(instance);
                 }
-               /* if (rr >= 90)
-                {
-                    GameObject instance = Instantiate(Resources.Load("Arena/Tiles/Crate", typeof(GameObject))) as GameObject;
-                    instance.transform.position = new Vector2(x + offset_w + Random.Range(-1, 1), -y + offset_h + Random.Range(-1, 1));
-
-                    float scale = Random.Range(0.8f, 1.2f);
-                    instance.transform.localScale = new Vector3(scale, scale, 1);
-
-                    if (immutable)
-                        instance.GetComponent<Tile>().destroyable = false;
-                    tiles[x, y] = instance;
-                } */
             }
         }
     }
@@ -197,29 +174,17 @@ public class GameManager : MonoBehaviour
     }
 
     // Returns all GameObject tiles around a point (xf_c, yf_c) with a given radius
-    public ArrayList GetAround(float xf_c, float yf_c, int radius)
+    public ArrayList GetTiles()
     {
-        int offset_w = -Mathf.FloorToInt(width / 2);
-        int offset_h = Mathf.FloorToInt(height / 2);
-
-        int x_c = Mathf.FloorToInt(xf_c - offset_w);
-        int y_c = Mathf.FloorToInt(height - yf_c - offset_h);
-        
-        ArrayList list = new ArrayList();
-        for (int x = x_c - radius; x <= x_c + radius; x++)
+        ArrayList toRemove = new ArrayList();
+        foreach (GameObject go in tiles)
         {
-            for (int y = y_c - radius; y <= y_c + radius; y++)
-            {
-                if (x < 0 || y < 0)
-                    continue;
-                if (x >= width || y >= height)
-                    continue;
-
-                if (tiles[x, y])
-                    list.Add(tiles[x, y]);
-            }
+            if (!go)
+                toRemove.Add(go);
         }
-        return list;
+        foreach (GameObject t in toRemove)
+            tiles.Remove(t);
+        return tiles;
     }
 
     public ArrayList GetEnemies()
