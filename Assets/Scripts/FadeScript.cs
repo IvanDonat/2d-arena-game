@@ -14,6 +14,7 @@ public class FadeScript : MonoBehaviour {
         time = Time.realtimeSinceStartup;
 
         transform.position = Camera.main.transform.position + Vector3.forward;
+        transform.parent = Camera.main.transform;
     }
 
     void Update()
