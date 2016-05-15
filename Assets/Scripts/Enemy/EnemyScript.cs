@@ -14,7 +14,6 @@ public class EnemyScript : MonoBehaviour
     private Rigidbody2D rbody;
     private EnemyHeadScript headScript;
     public ParticleSystem particleDeath;
-    private GameManager gm;
 
     private GunScript currentGun;
     public GunScript[] guns;
@@ -46,7 +45,6 @@ public class EnemyScript : MonoBehaviour
         headScript = GetComponentInChildren<EnemyHeadScript>();
         if(GameObject.FindGameObjectWithTag("Player"))
             player = GameObject.FindGameObjectWithTag("Player").transform;
-        gm = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
 
         maxHealth = health;
 
@@ -93,7 +91,7 @@ public class EnemyScript : MonoBehaviour
         emulatedII.shootUp = 0;
         emulatedII.shootRight = 0;
 
-        GameObject closestEnemy = GetClosestEnemy();
+        Transform closestEnemy = (player != null) ? player : null;
         if (closestEnemy != null)
         {
             Vector2 aimDir = closestEnemy.transform.position - transform.position;
@@ -116,7 +114,7 @@ public class EnemyScript : MonoBehaviour
             state = EnemyState.ROAMING;
         else
         {
-            if ((closestEnemy.position - transform.position).sqrMagnitude <= 10 * 10)
+            if ((closestEnemy.position - transform.position).sqrMagnitude <= 50)
             {
                 state = EnemyState.AGRESSIVE;
             }
@@ -149,31 +147,6 @@ public class EnemyScript : MonoBehaviour
         rbody.AddForce(moveDir.normalized * moveForce, ForceMode2D.Impulse);
     }
 
-    GameObject GetClosestEnemy()
-    {
-        enemies = gm.GetEnemies();
-        GameObject closestEnemy = null;
-        float minDist = 1000;
-        foreach (GameObject g in enemies)
-        {
-            if (g == gameObject)
-                continue;
-            if ((g.transform.position - transform.position).sqrMagnitude < minDist)
-            {
-                closestEnemy = g;
-                minDist = (g.transform.position - transform.position).sqrMagnitude;
-            }
-        }
-
-        if (player != null && (player.position - transform.position).sqrMagnitude < minDist)
-        {
-            closestEnemy = player.gameObject;
-            minDist = (player.position - transform.position).sqrMagnitude;
-        }
-
-        return closestEnemy;
-    }
-
     public void TakeDamage(float dmg)
     {
         health -= dmg;
@@ -181,7 +154,8 @@ public class EnemyScript : MonoBehaviour
 
         if (health <= 0)
         {   
-            GameObject.FindGameObjectWithTag("GUI").SendMessage("PushNotification", "-1 enemy");
+            if(GameObject.FindGameObjectWithTag("GUI"))
+                GameObject.FindGameObjectWithTag("GUI").SendMessage("PushNotification", "-1 enemy");
 
             if (particleDeath)
             {           

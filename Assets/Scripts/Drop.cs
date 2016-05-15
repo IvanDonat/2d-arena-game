@@ -6,7 +6,7 @@ public class Drop : MonoBehaviour {
     public string[] weaponNames;
     private string wep;
 
-    public AudioSource audio;
+    public AudioSource pickupAudio;
 
     public int restoreHealth = 0;
 
@@ -69,9 +69,9 @@ public class Drop : MonoBehaviour {
                 }
                 if (used)
                 {
-                    audio.transform.parent = null;
-                    audio.Play();
-                    audio.gameObject.AddComponent<DestroyAfterTime>();
+                    pickupAudio.transform.parent = null;
+                    pickupAudio.Play();
+                    pickupAudio.gameObject.AddComponent<DestroyAfterTime>();
 
                     Destroy(gameObject);
                 }
