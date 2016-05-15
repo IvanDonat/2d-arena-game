@@ -142,6 +142,8 @@ public class PlayerScript : MonoBehaviour
         if (health <= 0)
         {
             gui.PushNotification("You died");
+            gm.PlayerDied();
+
             if (particleDeath)
             {           
                 particleDeath.transform.parent = null;

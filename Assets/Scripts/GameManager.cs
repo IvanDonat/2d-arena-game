@@ -1,5 +1,13 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.SceneManagement;
+
+public enum GameState
+{
+    PLAYING,
+    WON,
+    LOST
+}
 
 public class GameManager : MonoBehaviour
 {
@@ -9,7 +17,13 @@ public class GameManager : MonoBehaviour
     //private GameObject[,] tiles; // this exists solely for area damage
     private ArrayList tiles;
 
+    private GUIController gui;
+
     public bool pausable = false;
+
+    private GameState state = GameState.PLAYING;
+    public Transform fadeOut;
+    private float gameoverTimestamp;
 
     public int numEnemies = 7;
     private ArrayList enemies;
@@ -21,6 +35,7 @@ public class GameManager : MonoBehaviour
         enemies = new ArrayList();
         foreach(GameObject en in GameObject.FindGameObjectsWithTag("Enemy"))
             enemies.Add(en);
+        gui = GameObject.FindGameObjectWithTag("GUI").GetComponent<GUIController>();
     }
 
     void Start()
@@ -32,6 +47,21 @@ public class GameManager : MonoBehaviour
 
     void Update()
     {
+        CheckWinConditions();
+
+        if (state != GameState.PLAYING)
+        {
+            if (Time.time - gameoverTimestamp >= 2f)
+            {
+                if (state == GameState.WON)
+                    SceneManager.LoadScene("GameWon");
+                else
+                    SceneManager.LoadScene("GameLost");
+            }
+        }
+
+
+
         if (pausable && Input.GetKeyDown(KeyCode.Escape))
         {
             paused = !paused;
@@ -43,6 +73,30 @@ public class GameManager : MonoBehaviour
             {
                 Time.timeScale = 1;
             }
+        }
+    }
+
+    private void CheckWinConditions()
+    {
+        if (state == GameState.PLAYING && GetEnemies().Count == 0)
+        {
+            state = GameState.WON;
+            gameoverTimestamp = Time.time;
+            Instantiate(fadeOut);
+            gui.gameObject.SetActive(false);
+           // SetPaused(true);
+        }
+    }
+
+    public void PlayerDied()
+    {
+        if (state == GameState.PLAYING)
+        {
+            state = GameState.LOST;
+            gameoverTimestamp = Time.time;
+            Instantiate(fadeOut);
+            gui.gameObject.SetActive(false);
+          //  SetPaused(true);
         }
     }
 
@@ -167,6 +221,19 @@ public class GameManager : MonoBehaviour
             Vector2 randomPos = new Vector2(Random.Range(2, width - 2) + offset_w, -Random.Range(2, height - 2) + offset_h);
             GameObject enemy = Instantiate(Resources.Load("Enemy"), randomPos, Quaternion.identity) as GameObject;
             enemies.Add(enemy);
+        }
+    }
+
+    void SetPaused(bool p)
+    {
+        paused = p;
+        if (paused)
+        {
+            Time.timeScale = 0;
+        }
+        else
+        {
+            Time.timeScale = 1;
         }
     }
 
