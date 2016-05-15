@@ -12,6 +12,7 @@ public class BulletScript : MonoBehaviour
 
     public float speed = 5f;
     public float dmg = 5f;
+    public float force = 1f;
 
     public DestroyType destroyType = DestroyType.HIT;
     public float timeToDestroy = 3f;
@@ -62,6 +63,11 @@ public class BulletScript : MonoBehaviour
                 destroyParticles.Play();
 
                 c.gameObject.SendMessage("TakeDamage", dmg, SendMessageOptions.DontRequireReceiver);
+                if (c.GetComponent<Rigidbody2D>())
+                {
+                    c.GetComponent<Rigidbody2D>().AddForce(transform.GetComponent<Rigidbody2D>().velocity.normalized * force, ForceMode2D.Impulse);
+                }
+
                 Destroy(gameObject);
             }
             else
@@ -105,11 +111,14 @@ public class BulletScript : MonoBehaviour
                 var enemies = gm.GetEnemies();
                 foreach(GameObject en in enemies)
                 {
-                    Vector2 deltaPos = transform.position - en.transform.position;
+                    Vector2 deltaPos = -transform.position + en.transform.position;
                     if (deltaPos.sqrMagnitude <= areaRadius * areaRadius)
                     {
                         float calculatedDamage = dmg - (deltaPos.magnitude / areaRadius)*dmg;
                         en.SendMessage("TakeDamage", calculatedDamage, SendMessageOptions.RequireReceiver);
+
+                        Rigidbody2D rb = en.GetComponent<Rigidbody2D>();
+                        rb.AddForce(deltaPos.normalized * force * (1 - deltaPos.magnitude / areaRadius), ForceMode2D.Impulse);
                     }
                 }
             }
@@ -118,12 +127,16 @@ public class BulletScript : MonoBehaviour
                 GameObject player = GameObject.FindGameObjectWithTag("Player");
                 if (player)
                 {
-                    Vector2 deltaPos = transform.position - player.transform.position;
+                    Vector2 deltaPos = -transform.position + player.transform.position;
                     if (deltaPos.sqrMagnitude <= areaRadius * areaRadius)
                     {
                         float calculatedDamage = dmg - (deltaPos.magnitude / areaRadius)*dmg;
                         player.SendMessage("TakeDamage", calculatedDamage, SendMessageOptions.RequireReceiver);
+
+                        Rigidbody2D rb = player.GetComponent<Rigidbody2D>();
+                        rb.AddForce(deltaPos.normalized * force * (1 - deltaPos.magnitude / areaRadius), ForceMode2D.Impulse);
                     }
+
                 }
             }
             else

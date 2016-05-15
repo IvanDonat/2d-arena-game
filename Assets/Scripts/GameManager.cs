@@ -9,9 +9,6 @@ public class GameManager : MonoBehaviour
     //private GameObject[,] tiles; // this exists solely for area damage
     private ArrayList tiles;
 
-    private int groupW = 8, groupH = 8;
-    //private GameObject[,] groupParent;
-
     public bool pausable = false;
 
     public int numEnemies = 7;

@@ -39,10 +39,10 @@ public class GUIController : MonoBehaviour {
 	
     void Update () {
         guiHealth.text = "HEALTH: " + health.ToString();
-        guiHealth.color = Color.Lerp(guiHealth.color, initialHPColor, Time.deltaTime * 5f);
+        guiHealth.color = Color.Lerp(guiHealth.color, initialHPColor, Time.deltaTime * 2f);
 
         guiEnemyCount.text = "ENEMIES: " + enemyCount.ToString();
-        guiEnemyCount.color = Color.Lerp(guiEnemyCount.color, initialHPColor, Time.deltaTime * 5f);
+        guiEnemyCount.color = Color.Lerp(guiEnemyCount.color, initialHPColor, Time.deltaTime * 2f);
 
         if (notifications.Count != 0)
         {
