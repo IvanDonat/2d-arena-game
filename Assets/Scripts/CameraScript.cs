@@ -39,7 +39,7 @@ public class CameraScript : MonoBehaviour
             if (GameObject.FindGameObjectWithTag("Enemy") != null)
             {
                 pickEnemyResetTime -= Time.deltaTime;
-                if(pickEnemyResetTime <= 0)
+                if(!enemy || pickEnemyResetTime <= 0)
                 {
                     GameObject[] en = GameObject.FindGameObjectsWithTag("Enemy");
                     enemy = en[Random.Range(0, en.Length)].transform;

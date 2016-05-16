@@ -207,6 +207,15 @@ public class GameManager : MonoBehaviour
                     instance.transform.parent = tileParent.transform;
                     tiles.Add(instance);
                 }
+
+                if (rr > 10 && rr <= 12)
+                {
+                    GameObject instance = Instantiate(Resources.Load("Arena/Tiles/BlackHole", typeof(GameObject))) as GameObject;
+                    instance.transform.position = new Vector2(x + offset_w + Random.Range(-1, 1), -y + offset_h + Random.Range(-1, 1));
+
+                    instance.transform.parent = tileParent.transform;
+                    tiles.Add(instance);
+                }
             }
         }
     }

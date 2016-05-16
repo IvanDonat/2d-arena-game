@@ -41,6 +41,7 @@ public class Tile : MonoBehaviour
 
             if (drop)
             {
+                // @TODO hardcoded drop, fix
                 GameObject dr = Instantiate(Resources.Load("Drops/MeteorDebris", typeof(GameObject)), transform.position, Quaternion.identity) as GameObject;
                 dr.transform.localScale = transform.localScale;
             }

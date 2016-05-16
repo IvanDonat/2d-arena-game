@@ -179,6 +179,13 @@ public class EnemyScript : MonoBehaviour
         }
     }
 
+    // Called by BlackHoleScript.cs
+    void Disappear()
+    {
+        if(GameObject.FindGameObjectWithTag("GUI"))
+            GameObject.FindGameObjectWithTag("GUI").SendMessage("PushNotification", "-1 enemy (black hole)");
+    }
+
     public bool SetWeapon(string wep)
     {
         if (wep == currentGun.transform.name)

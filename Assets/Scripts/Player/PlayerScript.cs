@@ -155,6 +155,12 @@ public class PlayerScript : MonoBehaviour
         }
     }
 
+    // Called by BlackHoleScript.cs
+    void Disappear()
+    {
+        gm.PlayerDied();
+    }
+
     public bool SetWeapon(string wep)
     {        
         if (wep == currentGun.transform.name)
