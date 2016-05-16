@@ -5,16 +5,23 @@ public class CameraScript : MonoBehaviour
 {
     public bool followEnemies = false;
 
-    public Transform player;
+    private Transform player;
+    private Transform enemy;
+
     private float dampTime = .1f;
     private Vector3 velocity;
 
     private float lastLookedForPlayer;
+    private float pickEnemyResetTime = 10f;
 
     void Start()
     {
         if(GameObject.FindGameObjectWithTag("Player"))
             player = GameObject.FindGameObjectWithTag("Player").transform;
+        
+        if (GameObject.FindGameObjectWithTag("Enemy"))
+            enemy = GameObject.FindGameObjectWithTag("Enemy").transform;
+
         lastLookedForPlayer = Time.time;
     }
 
@@ -31,7 +38,15 @@ public class CameraScript : MonoBehaviour
         {
             if (GameObject.FindGameObjectWithTag("Enemy") != null)
             {
-                Vector3 pos = GameObject.FindGameObjectWithTag("Enemy").transform.position;
+                pickEnemyResetTime -= Time.deltaTime;
+                if(pickEnemyResetTime <= 0)
+                {
+                    GameObject[] en = GameObject.FindGameObjectsWithTag("Enemy");
+                    enemy = en[Random.Range(0, en.Length)].transform;
+                    pickEnemyResetTime = 10f;
+                }
+
+                Vector3 pos = enemy.position;
                 Vector3 point = Camera.main.WorldToViewportPoint(pos);
                 Vector3 delta = pos - Camera.main.ViewportToWorldPoint(new Vector3(0.5f, 0.5f, point.z));
                 destination = transform.position + delta;
