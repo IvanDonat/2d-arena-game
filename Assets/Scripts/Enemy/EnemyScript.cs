@@ -194,4 +194,9 @@ public class EnemyScript : MonoBehaviour
         Debug.LogWarning("GunScript SetWeapon(string), no such gun found: " + wep);
         return false;
     }
+
+    void OnCollisionEnter2D(Collision2D c)
+    {
+        evadeDirReset = -5f;
+    }
 }
