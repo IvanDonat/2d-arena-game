@@ -62,7 +62,7 @@ public class GameManager : MonoBehaviour
 
 
 
-        if (pausable && Input.GetKeyDown(KeyCode.Escape))
+        if (pausable && Input.GetKeyDown(KeyCode.Escape) && state == GameState.PLAYING)
         {
             paused = !paused;
             if (paused)

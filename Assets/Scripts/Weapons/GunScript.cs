@@ -42,7 +42,7 @@ public class GunScript : MonoBehaviour
                 float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
                 transform.rotation = Quaternion.Euler(transform.rotation.x, transform.rotation.y, angle);
 
-                if (useBuildupTime && Time.time - holdTime >= buildupTime)
+                if (useBuildupTime && Time.time - holdTime >= buildupTime && Time.time - lastTimeShot >= shootDelay)
                 {
                     Shoot();
                 }
