@@ -24,6 +24,7 @@ public class PlayerScript : MonoBehaviour
     public float health = 100;
 
     public AudioSource audioHitWall;
+    public AudioSource audioHurt;
 
     private float enemyCountLastUpdated = -5f;
     private float enemyCountUpdateInterval = .2f;
@@ -137,6 +138,13 @@ public class PlayerScript : MonoBehaviour
         if (dmg < 0)
         {
             gui.PushNotification("Healed for " + -(int)dmg);
+        }
+        else
+        {
+            // workaround so it works if you die
+            GameObject g = Instantiate(audioHurt.gameObject, transform.position, Quaternion.identity) as GameObject;
+            g.GetComponent<AudioSource>().Play();
+            g.AddComponent<DestroyAfterTime>();
         }
 
         if (health <= 0)
