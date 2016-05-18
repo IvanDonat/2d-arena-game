@@ -36,21 +36,26 @@ public class CameraScript : MonoBehaviour
         }
         else
         {
-            if (GameObject.FindGameObjectWithTag("Enemy") != null)
+            pickEnemyResetTime -= Time.deltaTime;
+            if(!enemy || pickEnemyResetTime <= 0)
             {
-                pickEnemyResetTime -= Time.deltaTime;
-                if(!enemy || pickEnemyResetTime <= 0)
+                GameObject[] en = GameObject.FindGameObjectsWithTag("Enemy");
+                if (en.Length > 0)
                 {
-                    GameObject[] en = GameObject.FindGameObjectsWithTag("Enemy");
                     enemy = en[Random.Range(0, en.Length)].transform;
                     pickEnemyResetTime = 10f;
                 }
-
-                Vector3 pos = enemy.position;
-                Vector3 point = Camera.main.WorldToViewportPoint(pos);
-                Vector3 delta = pos - Camera.main.ViewportToWorldPoint(new Vector3(0.5f, 0.5f, point.z));
-                destination = transform.position + delta;
+                else
+                {
+                    // Couldn't find enemy, look again in 1 second
+                    pickEnemyResetTime = 1f;
+                }
             }
+
+            Vector3 pos = (enemy != null) ? enemy.position : Vector3.zero;
+            Vector3 point = Camera.main.WorldToViewportPoint(pos);
+            Vector3 delta = pos - Camera.main.ViewportToWorldPoint(new Vector3(0.5f, 0.5f, point.z));
+            destination = transform.position + delta;
 
             // Look for player every second
             if (Time.time - lastLookedForPlayer > 1f)
