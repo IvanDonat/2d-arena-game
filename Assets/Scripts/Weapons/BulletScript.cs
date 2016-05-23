@@ -21,17 +21,25 @@ public class BulletScript : MonoBehaviour
     public bool areaDamage = false;
     public int areaRadius;
 
+    public bool isHoming = false;
+    public float homingDist = 10f;
+    public float rotateSpeed = 10f;
+    private Transform target;
+    private float lastLookedForTarget;
+
     public AudioSource soundSpawn;
     public AudioSource soundDelete;
     public ParticleSystem destroyParticles;
 
     private GameManager gm;
+    private Rigidbody2D rbody;
 
     void Start()
     {
         gm = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
 
-        GetComponent<Rigidbody2D>().velocity = transform.right * speed;
+        rbody = GetComponent<Rigidbody2D>();
+        rbody.velocity = transform.right * speed;
         soundSpawn.transform.parent = null;
         soundSpawn.gameObject.AddComponent<DestroyAfterTime>();
 
@@ -43,6 +51,52 @@ public class BulletScript : MonoBehaviour
         if (destroyType == DestroyType.TIME && Time.time - spawnTime >= timeToDestroy)
         {
             Explode();
+        }
+
+        if (isHoming)
+        {
+            if (target)
+            {
+                Vector2 dir = target.position - transform.position;
+                float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+                Quaternion rot = Quaternion.AngleAxis(angle, Vector3.forward);
+
+                transform.rotation = Quaternion.Slerp(transform.rotation, rot, Time.deltaTime * rotateSpeed);
+                rbody.velocity = transform.right * speed;
+            }
+            else
+            {
+                if (Time.time - lastLookedForTarget > 1f)
+                {
+                    if (transform.tag == "PlayerBullet")
+                    {
+                        ArrayList enemies = gm.GetEnemies();
+                        float minDist = homingDist;
+                        foreach(GameObject en in enemies)
+                        {
+                            Vector2 dir = new Vector2(en.transform.position.x - transform.position.x, en.transform.position.y - transform.position.y);
+                            float angle = Vector2.Angle(transform.forward, dir);
+
+                            if (dir.magnitude < minDist)
+                            {
+                                target = en.transform;
+                                minDist = dir.magnitude;
+                            }
+                        }
+                    }
+                    else if (transform.tag == "EnemyBullet")
+                    {
+                        if(GameObject.FindGameObjectWithTag("Player"))
+                            target = GameObject.FindGameObjectWithTag("Player").transform;
+                    }
+                    else
+                    {
+                        Debug.LogError("Unknown tag homing bullet, BulletScript");
+                    }
+
+                    lastLookedForTarget = Time.time;
+                }
+            }
         }
     }
 
