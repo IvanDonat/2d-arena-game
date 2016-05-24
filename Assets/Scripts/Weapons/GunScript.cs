@@ -22,7 +22,18 @@ public class GunScript : MonoBehaviour
 
     void Start()
     {
-        
+        // transpose some settings if it's an enemy weapon
+        bool enemy = gameObject.layer == 9;
+        if (enemy)
+        {
+            if (useBuildupTime)
+            {
+                useBuildupTime = false;
+                shootDelay += buildupTime;
+            }
+            if (!repeated)
+                repeated = true;
+        }
     }
 
 
@@ -59,7 +70,8 @@ public class GunScript : MonoBehaviour
 
     private void Shoot()
     {
-        GameObject.Instantiate(bulletPrefab, transform.position + transform.right * 0.5f, transform.rotation);
+        Transform go = (Transform) GameObject.Instantiate(bulletPrefab, transform.position + transform.right * 0.5f, transform.rotation);
+        go.GetComponent<BulletScript>().SetOwner(gameObject.layer == 8);
         lastTimeShot = Time.time;
         holdTime = Time.time;
     }

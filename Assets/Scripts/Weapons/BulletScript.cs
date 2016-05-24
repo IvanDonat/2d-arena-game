@@ -4,12 +4,12 @@ using System.Collections;
 public enum DestroyType
 {
     HIT,
-    TIME
+    TIME,
+    BOTH
 }
 
 public class BulletScript : MonoBehaviour
 {
-
     public float speed = 5f;
     public float dmg = 5f;
     public float force = 1f;
@@ -33,6 +33,7 @@ public class BulletScript : MonoBehaviour
 
     private GameManager gm;
     private Rigidbody2D rbody;
+    private bool ownerSet = false;
 
     void Start()
     {
@@ -46,9 +47,32 @@ public class BulletScript : MonoBehaviour
         spawnTime = Time.time;
     }
 
+    // set whether this is a player-owned or enemy-owned bullet
+    public void SetOwner(bool player)
+    {
+        if (player)
+        {
+            transform.tag = "PlayerBullet";
+            gameObject.layer = 10;
+
+            GetComponent<SpriteRenderer>().color = Color.blue;
+            destroyParticles.startColor = Color.blue;
+        }
+        else
+        {
+            transform.tag = "EnemyBullet";
+            gameObject.layer = 11;
+
+            GetComponent<SpriteRenderer>().color = Color.yellow;
+            destroyParticles.startColor = Color.yellow;
+        }
+
+        ownerSet = true;
+    }
+
     void Update()
     {
-        if (destroyType == DestroyType.TIME && Time.time - spawnTime >= timeToDestroy)
+        if ((destroyType == DestroyType.TIME || destroyType == DestroyType.BOTH) && Time.time - spawnTime >= timeToDestroy)
         {
             Explode();
         }
@@ -75,7 +99,6 @@ public class BulletScript : MonoBehaviour
                         foreach(GameObject en in enemies)
                         {
                             Vector2 dir = new Vector2(en.transform.position.x - transform.position.x, en.transform.position.y - transform.position.y);
-                            float angle = Vector2.Angle(transform.forward, dir);
 
                             if (dir.magnitude < minDist)
                             {
@@ -102,9 +125,9 @@ public class BulletScript : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D c)
     {
-        if (c.isTrigger)
+        if (c.isTrigger || !ownerSet)
             return;
-        if (destroyType == DestroyType.HIT)
+        if (destroyType == DestroyType.HIT || destroyType == DestroyType.BOTH)
         {
             if (!areaDamage)
             {
