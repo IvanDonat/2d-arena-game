@@ -54,20 +54,20 @@ public class BulletScript : MonoBehaviour
         {
             transform.tag = "PlayerBullet";
             gameObject.layer = 10;
-
-            GetComponent<SpriteRenderer>().color = Color.blue;
-            destroyParticles.startColor = Color.blue;
         }
         else
         {
             transform.tag = "EnemyBullet";
             gameObject.layer = 11;
-
-            GetComponent<SpriteRenderer>().color = Color.yellow;
-            destroyParticles.startColor = Color.yellow;
         }
 
         ownerSet = true;
+    }
+
+    public void SetColor(Color c)
+    {
+        GetComponent<SpriteRenderer>().color = c;
+        destroyParticles.startColor = c;
     }
 
     void Update()

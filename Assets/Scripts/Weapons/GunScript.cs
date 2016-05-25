@@ -3,7 +3,7 @@ using System.Collections;
 
 public class GunScript : MonoBehaviour
 {
-
+    public Color color;
     public Transform bulletPrefab;
     public float shootDelay = 1f;
     public bool repeated = true;
@@ -22,6 +22,9 @@ public class GunScript : MonoBehaviour
 
     void Start()
     {
+        // unity default color is transparent
+        color.a = 1f; 
+        
         // transpose some settings if it's an enemy weapon
         bool enemy = gameObject.layer == 9;
         if (enemy)
@@ -72,6 +75,7 @@ public class GunScript : MonoBehaviour
     {
         Transform go = (Transform) GameObject.Instantiate(bulletPrefab, transform.position + transform.right * 0.5f, transform.rotation);
         go.GetComponent<BulletScript>().SetOwner(gameObject.layer == 8);
+        go.GetComponent<BulletScript>().SetColor(color);
         lastTimeShot = Time.time;
         holdTime = Time.time;
     }
