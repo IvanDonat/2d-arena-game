@@ -78,7 +78,7 @@ public class PlayerScript : MonoBehaviour
         Vector2 moveDirKeys = new Vector2(ii.right, ii.up);
         // Vector2 shootDirKeys = new Vector2(ii.shootRight, ii.shootUp);
 
-        rbody.AddForce(moveDirKeys.normalized * 0.8f, ForceMode2D.Impulse);
+        rbody.AddForce(moveDirKeys.normalized * 0.6f, ForceMode2D.Impulse);
 
         headScript.CustomFixedUpdate(ii);
     }
