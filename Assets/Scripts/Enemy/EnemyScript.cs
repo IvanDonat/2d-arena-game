@@ -15,6 +15,8 @@ public class EnemyScript : MonoBehaviour
     private EnemyHeadScript headScript;
     public ParticleSystem particleDeath;
 
+    public Transform debris;
+
     private GunScript currentGun;
     public GunScript[] guns;
 
@@ -45,6 +47,9 @@ public class EnemyScript : MonoBehaviour
         headScript = GetComponentInChildren<EnemyHeadScript>();
         if(GameObject.FindGameObjectWithTag("Player"))
             player = GameObject.FindGameObjectWithTag("Player").transform;
+
+        debris = transform.FindChild("Debris");
+        debris.gameObject.SetActive(false);
 
         maxHealth = health;
 
@@ -171,8 +176,9 @@ public class EnemyScript : MonoBehaviour
                 deathSound.Play();
             }
 
-            GameObject debris = Instantiate(Resources.Load("Drops/Debris", typeof(GameObject)), transform.position, Quaternion.identity) as GameObject;
-            debris.transform.localScale = new Vector3(0.8f, 0.8f, 1f);
+            debris.gameObject.SetActive(true);
+            debris.parent = null;
+            debris.localScale = new Vector3(0.8f, 0.8f, 1f);
             debris.GetComponent<Drop>().SetWeapon(currentGun.transform.name);
 
             Destroy(gameObject);

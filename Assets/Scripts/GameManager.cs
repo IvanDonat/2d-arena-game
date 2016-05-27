@@ -236,7 +236,7 @@ public class GameManager : MonoBehaviour
         for (int i = 0; i < numEnemies; i++)
         {
             Vector2 randomPos = new Vector2(Random.Range(2, width - 2) + offset_w, -Random.Range(2, height - 2) + offset_h);
-            GameObject enemy = Instantiate(Resources.Load("Enemies/Enemy"), randomPos, Quaternion.identity) as GameObject;
+            GameObject enemy = Instantiate(Resources.Load("Enemies/Huangse"), randomPos, Quaternion.identity) as GameObject;
             enemies.Add(enemy);
         }
     }

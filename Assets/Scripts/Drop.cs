@@ -2,15 +2,13 @@
 using System.Collections;
 
 public class Drop : MonoBehaviour {
+    
     public bool dropWeapon = true;
-    public string[] weaponNames;
-    private string wep;
+    private string wep = "NOT_SET";
 
     public AudioSource pickupAudio;
 
     public int restoreHealth = 0;
-
-    public TextMesh text;
 
     private Vector2 initialPos;
     private float timeOffset;
@@ -19,10 +17,6 @@ public class Drop : MonoBehaviour {
     {
         initialPos = transform.position;
         timeOffset = Random.Range(0f, 1f);
-
-        if(wep == null || wep.Length == 0)
-            wep = weaponNames[Random.Range(0, weaponNames.Length)];
-        text.text = wep.Substring(0, 1);
     }
 
     void Update()
