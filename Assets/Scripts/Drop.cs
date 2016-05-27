@@ -32,14 +32,15 @@ public class Drop : MonoBehaviour {
             return;
         if (c.tag == "Enemy" || c.tag == "Player")
         {
+            /* Enemies have their own set weapon
             if (c.tag == "Enemy")
             {
                 bool used = false;
-                if (dropWeapon && c.GetComponent<EnemyScript>().SetWeapon(wep))
+                if (dropWeapon && c.GetComponent<Enemy>().SetWeapon(wep))
                 {
                     used = true;
                 }
-                if (restoreHealth >= 1 && c.GetComponent<EnemyScript>().health < c.GetComponent<EnemyScript>().maxHealth)
+                if (restoreHealth >= 1 && c.GetComponent<Enemy>().health < c.GetComponent<Enemy>().maxHealth)
                 {
                     used = true;
                     c.transform.BroadcastMessage("TakeDamage", -restoreHealth, SendMessageOptions.RequireReceiver);
@@ -49,6 +50,7 @@ public class Drop : MonoBehaviour {
                     Destroy(gameObject);
                 }
             }
+            */
             if(c.tag == "Player")
             {
                 bool used = false;
