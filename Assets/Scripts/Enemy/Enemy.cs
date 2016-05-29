@@ -178,7 +178,7 @@ public class Enemy : MonoBehaviour
 
             debris.gameObject.SetActive(true);
             debris.parent = null;
-            debris.GetComponent<Drop>().SetWeapon(currentGun.transform.name);
+            debris.GetComponent<PickupWeapon>().SetWeapon(currentGun.transform.name);
 
             Destroy(gameObject);
         }

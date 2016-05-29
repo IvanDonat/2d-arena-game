@@ -30,11 +30,15 @@ public class GUIController : MonoBehaviour {
     private string oldNotification;
     private float lastChangedNotification;
 
-	// Use this for initialization
+    public Text guiPickup;
+    private string pickupOriginalText;
+
     void Start () {
         initialHPColor = guiHealth.color;
         pausedGUI.gameObject.SetActive(false);
         notifications = new ArrayList();
+        guiPickup.gameObject.SetActive(false);
+        pickupOriginalText = guiPickup.text + " ";
     }
 	
     void Update () {
