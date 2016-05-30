@@ -22,8 +22,8 @@ public class MainMenuGraphics : MonoBehaviour {
         int offset_w = -Mathf.FloorToInt(width / 2);
         int offset_h = Mathf.FloorToInt(height / 2);
 
-        string borderStraight = "Arena/BorderStraight";
-        string borderCurve = "Arena/BorderCurve";
+        string borderStraight = Paths.ARENA + "BorderStraight";
+        string borderCurve = Paths.ARENA + "BorderCurve";
 
         for (int y = 0; y < height; y++)
         {
@@ -89,7 +89,7 @@ public class MainMenuGraphics : MonoBehaviour {
                 int rr = Random.Range(0, 100);
                 if (rr <= 20)
                 {
-                    GameObject instance = Instantiate(Resources.Load("Arena/Tiles/Meteor", typeof(GameObject))) as GameObject;
+                    GameObject instance = Instantiate(Resources.Load(Paths.TILES + "Meteor", typeof(GameObject))) as GameObject;
                     instance.transform.position = new Vector2(x + offset_w + Random.Range(-1, 1), -y + offset_h + Random.Range(-1, 1));
 
                     float scale = Random.Range(0.3f, 3f);
@@ -109,7 +109,7 @@ public class MainMenuGraphics : MonoBehaviour {
         for (int i = 0; i < numEnemies; i++)
         {
             Vector2 randomPos = new Vector2(Random.Range(2, width - 2) + offset_w, -Random.Range(2, height - 2) + offset_h);
-            Instantiate(Resources.Load("Enemies/Huangse"), randomPos, Quaternion.identity);
+            Instantiate(Resources.Load(Paths.ENEMIES + "Huangse"), randomPos, Quaternion.identity);
         }
     }
 

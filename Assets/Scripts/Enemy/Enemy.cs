@@ -161,6 +161,12 @@ public class Enemy : MonoBehaviour
         health = Mathf.Clamp(health, 0, maxHealth);
         healthBar.SetHealth(health);
 
+        if (dmg > 0)
+        {
+            GameObject damageNum = (GameObject) GameObject.Instantiate(Resources.Load(Paths.DAMAGE_NUMBERS), transform.position + (Vector3.up * transform.localScale.y), Quaternion.identity);;
+            damageNum.GetComponent<DamageNumbersScript>().SetDamage(dmg);
+        }
+
         if (health <= 0)
         {   
             if(GameObject.FindGameObjectWithTag("GUI"))

@@ -60,8 +60,6 @@ public class GameManager : MonoBehaviour
             }
         }
 
-
-
         if (pausable && Input.GetKeyDown(KeyCode.Escape) && state == GameState.PLAYING)
         {
             paused = !paused;
@@ -84,7 +82,6 @@ public class GameManager : MonoBehaviour
             gameoverTimestamp = Time.time;
             Instantiate(fadeOut);
             gui.gameObject.SetActive(false);
-           // SetPaused(true);
         }
     }
 
@@ -96,7 +93,6 @@ public class GameManager : MonoBehaviour
             gameoverTimestamp = Time.time;
             Instantiate(fadeOut);
             gui.gameObject.SetActive(false);
-          //  SetPaused(true);
         }
     }
 
@@ -111,9 +107,9 @@ public class GameManager : MonoBehaviour
         int offset_w = -Mathf.FloorToInt(width / 2);
         int offset_h = Mathf.FloorToInt(height / 2);
        
-        string floor = "Arena/Floor";
-        string borderStraight = "Arena/BorderStraight";
-        string borderCurve = "Arena/BorderCurve";
+        string floor = Paths.ARENA + "Floor";
+        string borderStraight = Paths.ARENA + "BorderStraight";
+        string borderCurve = Paths.ARENA + "BorderCurve";
 
         if (createTileBackground)
         {
@@ -198,7 +194,7 @@ public class GameManager : MonoBehaviour
                 int rr = Random.Range(0, 100);
                 if (rr <= 10)
                 {
-                    GameObject instance = Instantiate(Resources.Load("Arena/Tiles/Meteor", typeof(GameObject))) as GameObject;
+                    GameObject instance = Instantiate(Resources.Load(Paths.TILES + "Meteor", typeof(GameObject))) as GameObject;
                     instance.transform.position = new Vector2(x + offset_w + Random.Range(-1, 1), -y + offset_h + Random.Range(-1, 1));
 
                     float scale = Random.Range(0.3f, 3f);
@@ -210,7 +206,7 @@ public class GameManager : MonoBehaviour
 
                 if (rr > 10 && rr <= 12)
                 {
-                    GameObject instance = Instantiate(Resources.Load("Arena/Tiles/Wormhole", typeof(GameObject))) as GameObject;
+                    GameObject instance = Instantiate(Resources.Load(Paths.TILES + "Wormhole", typeof(GameObject))) as GameObject;
                     instance.transform.position = new Vector2(x + offset_w + Random.Range(-1, 1), -y + offset_h + Random.Range(-1, 1));
 
                     instance.transform.parent = tileParent.transform;
@@ -218,7 +214,7 @@ public class GameManager : MonoBehaviour
                 }
                 if (rr > 12 && rr <= 16)
                 {
-                    GameObject instance = Instantiate(Resources.Load("Arena/Tiles/WormholeExit", typeof(GameObject))) as GameObject;
+                    GameObject instance = Instantiate(Resources.Load(Paths.TILES + "WormholeExit", typeof(GameObject))) as GameObject;
                     instance.transform.position = new Vector2(x + offset_w + Random.Range(-1, 1), -y + offset_h + Random.Range(-1, 1));
 
                     instance.transform.parent = tileParent.transform;
@@ -236,7 +232,7 @@ public class GameManager : MonoBehaviour
         for (int i = 0; i < numEnemies; i++)
         {
             Vector2 randomPos = new Vector2(Random.Range(2, width - 2) + offset_w, -Random.Range(2, height - 2) + offset_h);
-            GameObject enemy = Instantiate(Resources.Load("Enemies/Huangse"), randomPos, Quaternion.identity) as GameObject;
+            GameObject enemy = Instantiate(Resources.Load(Paths.ENEMIES + "Huangse"), randomPos, Quaternion.identity) as GameObject;
             enemies.Add(enemy);
         }
     }

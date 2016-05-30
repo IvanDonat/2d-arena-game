@@ -149,16 +149,19 @@ public class PlayerScript : MonoBehaviour
         health = Mathf.Clamp(health, 0, maxHealth);
         gui.SetHP((int)health);
 
+
         if (dmg < 0)
         {
             gui.PushNotification("Healed for " + -(int)dmg);
         }
         else
         {
-            // workaround so it works if you die
             GameObject g = Instantiate(audioHurt.gameObject, transform.position, Quaternion.identity) as GameObject;
             g.GetComponent<AudioSource>().Play();
             g.AddComponent<DestroyAfterTime>();
+
+            GameObject damageNum = (GameObject) GameObject.Instantiate(Resources.Load(Paths.DAMAGE_NUMBERS), transform.position + Vector3.up, Quaternion.identity);
+            damageNum.GetComponent<DamageNumbersScript>().SetDamage(dmg);
         }
 
         if (health <= 1)
