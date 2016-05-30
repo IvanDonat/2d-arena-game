@@ -29,15 +29,6 @@ public class PickupWeapon : MonoBehaviour {
         
         if(c.tag == "Player")
         {
-            /*
-            if (dropWeapon && c.GetComponent<PlayerScript>().SetWeapon(wep))
-            {
-                pickupAudio.transform.parent = null;
-                pickupAudio.Play();
-                pickupAudio.gameObject.AddComponent<DestroyAfterTime>();
-
-                Destroy(gameObject);
-            } */
             PlayerScript ps = c.GetComponent<PlayerScript>();
             ps.TouchedPickup(this);
         }

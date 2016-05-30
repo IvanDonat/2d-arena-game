@@ -14,6 +14,7 @@ public class Enemy : MonoBehaviour
     private Rigidbody2D rbody;
     private EnemyHeadScript headScript;
     public ParticleSystem particleDeath;
+    public HealthBarScript healthBar;
 
     public Transform debris;
 
@@ -52,6 +53,8 @@ public class Enemy : MonoBehaviour
         debris.gameObject.SetActive(false);
 
         maxHealth = health;
+        healthBar.SetMaxHealth(maxHealth);
+        healthBar.SetHealth(health);
 
         holdDistance += Random.Range(0f, 4f);
 
@@ -156,6 +159,7 @@ public class Enemy : MonoBehaviour
     {
         health -= dmg;
         health = Mathf.Clamp(health, 0, maxHealth);
+        healthBar.SetHealth(health);
 
         if (health <= 0)
         {   
@@ -175,6 +179,8 @@ public class Enemy : MonoBehaviour
                 deathSound.gameObject.AddComponent<DestroyAfterTime>();
                 deathSound.Play();
             }
+
+            Destroy(healthBar.gameObject);
 
             debris.gameObject.SetActive(true);
             debris.parent = null;
