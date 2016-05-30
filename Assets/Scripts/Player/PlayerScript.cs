@@ -161,7 +161,7 @@ public class PlayerScript : MonoBehaviour
             g.AddComponent<DestroyAfterTime>();
         }
 
-        if (health <= 0)
+        if (health <= 1)
         {
             gui.PushNotification("You died");
             gm.PlayerDied();
