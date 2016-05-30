@@ -29,6 +29,7 @@ public class PlayerScript : MonoBehaviour
     private float enemyCountLastUpdated = -5f;
     private float enemyCountUpdateInterval = .2f;
 
+    private PickupWeapon lastPickupContacted = null;
 
 
     void Awake()
@@ -59,7 +60,22 @@ public class PlayerScript : MonoBehaviour
         {
             gui.SetPaused(false);
         }
-        
+
+        if (lastPickupContacted && lastPickupContacted.GetName() != currentGun.name)
+        {
+            gui.OnPickup(lastPickupContacted, true);
+
+            if (Input.GetKeyDown(KeyCode.E))
+            {
+                SetWeapon(lastPickupContacted.GetName());
+                lastPickupContacted.Used();
+            }
+        }
+        else
+        {
+            gui.OnPickup(null, false);
+        }
+
         if (Time.time - enemyCountLastUpdated >= enemyCountUpdateInterval)
         {
             gui.SetEnemyCount(gm.GetEnemies().Count);
@@ -76,10 +92,8 @@ public class PlayerScript : MonoBehaviour
     {
         InputInfo ii = GetInput();
         Vector2 moveDirKeys = new Vector2(ii.right, ii.up);
-        // Vector2 shootDirKeys = new Vector2(ii.shootRight, ii.shootUp);
 
         rbody.AddForce(moveDirKeys.normalized * 0.6f, ForceMode2D.Impulse);
-
         headScript.CustomFixedUpdate(ii);
     }
 
@@ -178,5 +192,16 @@ public class PlayerScript : MonoBehaviour
         }
         Debug.LogWarning("GunScript SetWeapon(string), no such gun found: " + wep);
         return false;
+    }
+
+    public void TouchedPickup(PickupWeapon pw)
+    {
+        this.lastPickupContacted = pw;
+    }
+
+    public void ExitedPickup(PickupWeapon pw)
+    {
+        if (this.lastPickupContacted == pw)
+            this.lastPickupContacted = null;
     }
 }

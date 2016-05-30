@@ -101,4 +101,16 @@ public class GUIController : MonoBehaviour {
     {
         notifications.Add(new Notification(not, 1.5f));
     }
+
+    public void OnPickup(PickupWeapon pw, bool onPickup)
+    {
+        if (!onPickup)
+        {
+            guiPickup.gameObject.SetActive(false);
+            return;
+        }
+
+        guiPickup.gameObject.SetActive(true);
+        guiPickup.text = pickupOriginalText + pw.GetName();
+    }
 }

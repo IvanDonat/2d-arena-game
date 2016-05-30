@@ -24,34 +24,44 @@ public class PickupWeapon : MonoBehaviour {
 
     void OnTriggerEnter2D(Collider2D c)
     {
-        // Doesn't destroy if weapon is the same as currently wielded
-
         if (c.isTrigger)
             return;
-        if (c.tag == "Enemy" || c.tag == "Player")
+        
+        if(c.tag == "Player")
         {
-            /* Enemies have their own set weapon
-            if (c.tag == "Enemy")
+            /*
+            if (dropWeapon && c.GetComponent<PlayerScript>().SetWeapon(wep))
             {
-                bool used = false;
-                if (dropWeapon && c.GetComponent<Enemy>().SetWeapon(wep))
-                {
-                    Destroy(gameObject);
-                }
-            }
-            */
-            if(c.tag == "Player")
-            {
-                if (dropWeapon && c.GetComponent<PlayerScript>().SetWeapon(wep))
-                {
-                    pickupAudio.transform.parent = null;
-                    pickupAudio.Play();
-                    pickupAudio.gameObject.AddComponent<DestroyAfterTime>();
+                pickupAudio.transform.parent = null;
+                pickupAudio.Play();
+                pickupAudio.gameObject.AddComponent<DestroyAfterTime>();
 
-                    Destroy(gameObject);
-                }
-            }
+                Destroy(gameObject);
+            } */
+            PlayerScript ps = c.GetComponent<PlayerScript>();
+            ps.TouchedPickup(this);
         }
+    }
+
+    void OnTriggerExit2D(Collider2D c)
+    {
+        if (c.isTrigger)
+            return;
+        
+        if(c.tag == "Player")
+        {
+            PlayerScript ps = c.GetComponent<PlayerScript>();
+            ps.ExitedPickup(this);
+        }
+    }
+
+    public void Used()
+    {
+        pickupAudio.transform.parent = null;
+        pickupAudio.Play();
+        pickupAudio.gameObject.AddComponent<DestroyAfterTime>();
+
+        Destroy(gameObject);
     }
 
     public void SetWeapon(string s)
@@ -59,4 +69,8 @@ public class PickupWeapon : MonoBehaviour {
         wep = s;
     }
 
+    public string GetName()
+    {
+        return wep;
+    }
 }
