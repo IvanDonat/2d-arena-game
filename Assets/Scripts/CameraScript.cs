@@ -14,6 +14,9 @@ public class CameraScript : MonoBehaviour
     private float lastLookedForPlayer;
     private float pickEnemyResetTime = 10f;
 
+    private float minx, maxx;
+    private float miny, maxy;
+
     void Start()
     {
         if(GameObject.FindGameObjectWithTag("Player"))
@@ -69,5 +72,30 @@ public class CameraScript : MonoBehaviour
             }
         }
         transform.position = Vector3.SmoothDamp(transform.position, destination, ref velocity, dampTime);
+
+        ClampPosition();
+    }
+
+    void ClampPosition()
+    {
+        Vector3 newPos = transform.position;
+        newPos.x = Mathf.Clamp(newPos.x, minx, maxx);
+        newPos.y = Mathf.Clamp(newPos.y, miny, maxy);
+        transform.position = newPos;
+    }
+
+    public void SetBounds(float w, float h)
+    {
+        w--; h--;
+        w /= 2.0f;
+        h /= 2.0f;
+
+        float vertExtent = Camera.main.orthographicSize;
+        float horzExtent = vertExtent * (Screen.width / (float) Screen.height);
+
+        this.miny = vertExtent - h;
+        this.maxy = h - vertExtent;        
+        this.minx = horzExtent - w;
+        this.maxx = w - horzExtent;
     }
 }

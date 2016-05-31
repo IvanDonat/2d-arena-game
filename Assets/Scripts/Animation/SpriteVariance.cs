@@ -3,11 +3,9 @@ using System.Collections;
 
 public class SpriteVariance : MonoBehaviour
 {
-
     public string spritePath;
     public int gridWidth;
     public int gridHeight;
-
 
     void Start()
     {

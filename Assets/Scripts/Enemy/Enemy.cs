@@ -116,7 +116,6 @@ public class Enemy : MonoBehaviour
 
     public virtual void FixedUpdate()
     {
-        //Transform closestEnemy = GetClosestEnemy().transform;
         Transform closestEnemy = (player != null) ? player : null;
         if (closestEnemy == null)
             state = EnemyState.ROAMING;
@@ -215,5 +214,10 @@ public class Enemy : MonoBehaviour
     void OnCollisionEnter2D(Collision2D c)
     {
         evadeDirReset = -5f;
+    }
+
+    public void DisableHealthBar()
+    {
+        Destroy(healthBar.gameObject);
     }
 }

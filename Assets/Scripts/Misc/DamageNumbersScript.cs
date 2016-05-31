@@ -30,5 +30,8 @@ public class DamageNumbersScript : MonoBehaviour {
     {
         this.dmg = (int) dmg;
         textMesh.text = "-" + this.dmg.ToString();
+
+        if (dmg < 0)
+            textMesh.color = Color.green;
     }
 }

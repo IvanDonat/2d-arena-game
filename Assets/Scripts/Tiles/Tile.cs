@@ -9,7 +9,6 @@ public class Tile : MonoBehaviour
     public float health = 15f;
     public ParticleSystem destroyParticles;
     public Transform drop;
-    private string tileDamagePath = "Arena/Tiles/TileDamage";
 
     void Start()
     {
@@ -27,7 +26,7 @@ public class Tile : MonoBehaviour
         health -= dmg;
         health = Mathf.Clamp(health, 0, maxHealth);
 
-        GameObject tileDmg = GameObject.Instantiate(Resources.Load(tileDamagePath), transform.position, Quaternion.Euler(0, 0, Random.Range(0, 4) * 90)) as GameObject;
+        GameObject tileDmg = GameObject.Instantiate(Resources.Load(Paths.ARENA + "TileDamage"), transform.position, Quaternion.Euler(0, 0, Random.Range(0, 4) * 90)) as GameObject;
         tileDmg.transform.parent = transform;
 
         if (destroyable && health <= 0)

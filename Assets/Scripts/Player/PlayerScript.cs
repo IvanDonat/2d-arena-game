@@ -149,6 +149,8 @@ public class PlayerScript : MonoBehaviour
         health = Mathf.Clamp(health, 0, maxHealth);
         gui.SetHP((int)health);
 
+        GameObject damageNum = (GameObject) GameObject.Instantiate(Resources.Load(Paths.DAMAGE_NUMBERS), transform.position + Vector3.up, Quaternion.identity);
+        damageNum.GetComponent<DamageNumbersScript>().SetDamage(dmg);
 
         if (dmg < 0)
         {
@@ -159,9 +161,6 @@ public class PlayerScript : MonoBehaviour
             GameObject g = Instantiate(audioHurt.gameObject, transform.position, Quaternion.identity) as GameObject;
             g.GetComponent<AudioSource>().Play();
             g.AddComponent<DestroyAfterTime>();
-
-            GameObject damageNum = (GameObject) GameObject.Instantiate(Resources.Load(Paths.DAMAGE_NUMBERS), transform.position + Vector3.up, Quaternion.identity);
-            damageNum.GetComponent<DamageNumbersScript>().SetDamage(dmg);
         }
 
         if (health <= 1)

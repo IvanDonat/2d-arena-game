@@ -13,8 +13,6 @@ public class GameManager : MonoBehaviour
 {
 
     public bool createTileBackground = true;
-    public int width = 48, height = 48;
-    //private GameObject[,] tiles; // this exists solely for area damage
     private ArrayList tiles;
 
     private GUIController gui;
@@ -27,6 +25,9 @@ public class GameManager : MonoBehaviour
 
     public int numEnemies = 7;
     private ArrayList enemies;
+
+    // set value because WorldBounds is this size
+    private int width = 50, height = 50;
 
     private bool paused = false;
 
@@ -43,6 +44,8 @@ public class GameManager : MonoBehaviour
         tiles = new ArrayList();
         GenerateArena();
         SpawnPlayerAndEnemies();
+
+        Camera.main.GetComponent<CameraScript>().SetBounds(width, height);
     }
 
     void Update()
@@ -98,8 +101,6 @@ public class GameManager : MonoBehaviour
 
     void GenerateArena()
     {
-        GameObject bgParent = new GameObject("Background");
-        bgParent.transform.parent = transform;
         GameObject tileParent = new GameObject("Tiles");
         tileParent.transform.parent = transform;
 
@@ -107,94 +108,19 @@ public class GameManager : MonoBehaviour
         int offset_w = -Mathf.FloorToInt(width / 2);
         int offset_h = Mathf.FloorToInt(height / 2);
        
-        string floor = Paths.ARENA + "Floor";
-        string borderStraight = Paths.ARENA + "BorderStraight";
-        string borderCurve = Paths.ARENA + "BorderCurve";
+        GameObject bounds = Instantiate(Resources.Load(Paths.SCENE + "WorldBounds"), Vector3.zero, Quaternion.identity) as GameObject;
+        bounds.transform.position = Vector3.zero;
+        bounds.transform.parent = transform;
 
-        if (createTileBackground)
+        // Generate tiles
+        for (int y = 0; y < height; y+=3)
         {
-            for (int y = 0; y < height; y++)
-            {
-                for (int x = 0; x < width; x++)
-                {
-                    GameObject instance;
-                    if (!(x == 0 || y == 0 || x == width - 1 || y == height - 1))
-                    {
-                        instance = Instantiate(Resources.Load(floor, typeof(GameObject))) as GameObject;
-                        instance.transform.position = new Vector2(x + offset_w, -y + offset_h);
-                        instance.transform.parent = bgParent.transform;
-                    }
-                }
-            }
-        }
-
-        // Create Border
-        for (int y = 0; y < height; y++)
-        {
-            for (int x = 0; x < width; x++)
-            {
-                if (x == 0 || y == 0 || x == width - 1 || y == height - 1)
-                {
-                    bool curve = false;
-                    int rot = 90;
-                    if (x == 0 && y == 0)
-                    {
-                        curve = true;
-                        rot = 0;
-                    }
-                    else if (x == width - 1 && y == 0)
-                    {
-                        curve = true;
-                        rot = 270;
-                    }
-                    else if (x == width - 1 && y == height - 1)
-                    {
-                        curve = true;
-                        rot = 180;
-                    }
-                    else if (x == 0 && y == width - 1)
-                    {
-                        curve = true;
-                        rot = 90;
-                    }
-
-                    if (!curve)
-                    {
-                        if (y == 0)
-                            rot = 0;
-                        else if (x == 0)
-                            rot = 90;
-                        else if (x == width - 1)
-                            rot = -90;
-                        else
-                            rot = 180;
-                    }
-
-                    GameObject instance;
-                    if (curve)
-                    {
-                        instance = Instantiate(Resources.Load(borderCurve, typeof(GameObject))) as GameObject;
-                    }
-                    else
-                    {
-                        instance = Instantiate(Resources.Load(borderStraight, typeof(GameObject))) as GameObject;
-                    }
-                    instance.transform.position = new Vector2(x + offset_w, -y + offset_h);
-                    instance.transform.parent = bgParent.transform;
-                    instance.transform.Rotate(0, 0, rot);
-                }
-            }
-        }
-
-        // Generate Tiles
-        for (int y = 4; y < height - 5; y+=3)
-        {
-            for (int x = 4; x < width - 5; x+=3)
+            for (int x = 0; x < width; x+=3)
             {
                 int rr = Random.Range(0, 100);
                 if (rr <= 10)
                 {
-                    GameObject instance = Instantiate(Resources.Load(Paths.TILES + "Meteor", typeof(GameObject))) as GameObject;
+                    GameObject instance = Instantiate(Resources.Load(Paths.ARENA + "Meteor", typeof(GameObject))) as GameObject;
                     instance.transform.position = new Vector2(x + offset_w + Random.Range(-1, 1), -y + offset_h + Random.Range(-1, 1));
 
                     float scale = Random.Range(0.3f, 3f);
@@ -206,7 +132,7 @@ public class GameManager : MonoBehaviour
 
                 if (rr > 10 && rr <= 12)
                 {
-                    GameObject instance = Instantiate(Resources.Load(Paths.TILES + "Wormhole", typeof(GameObject))) as GameObject;
+                    GameObject instance = Instantiate(Resources.Load(Paths.ARENA + "Wormhole", typeof(GameObject))) as GameObject;
                     instance.transform.position = new Vector2(x + offset_w + Random.Range(-1, 1), -y + offset_h + Random.Range(-1, 1));
 
                     instance.transform.parent = tileParent.transform;
@@ -214,7 +140,7 @@ public class GameManager : MonoBehaviour
                 }
                 if (rr > 12 && rr <= 16)
                 {
-                    GameObject instance = Instantiate(Resources.Load(Paths.TILES + "WormholeExit", typeof(GameObject))) as GameObject;
+                    GameObject instance = Instantiate(Resources.Load(Paths.ARENA + "WormholeExit", typeof(GameObject))) as GameObject;
                     instance.transform.position = new Vector2(x + offset_w + Random.Range(-1, 1), -y + offset_h + Random.Range(-1, 1));
 
                     instance.transform.parent = tileParent.transform;

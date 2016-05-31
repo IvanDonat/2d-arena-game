@@ -7,7 +7,7 @@ public class Paths {
     public const string ENEMIES   = "Enemies/";
 
     public const string ARENA     = "Arena/";
-    public const string TILES     = "Arena/Tiles/";
+    public const string SCENE     = "ScenePrefabs/";
 
     public const string EFFECTS   = "Effects/";
 
