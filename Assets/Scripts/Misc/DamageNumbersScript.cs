@@ -29,9 +29,15 @@ public class DamageNumbersScript : MonoBehaviour {
     public void SetDamage(float dmg)
     {
         this.dmg = (int) dmg;
-        textMesh.text = "-" + this.dmg.ToString();
-
-        if (dmg < 0)
+        
+        if (dmg > 0)
+        {
+            textMesh.text = "-" + this.dmg.ToString();
+        }
+        else
+        {
+            textMesh.text = "+" + this.dmg.ToString();
             textMesh.color = Color.green;
+        }
     }
 }
