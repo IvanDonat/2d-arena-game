@@ -11,8 +11,6 @@ public enum GameState
 
 public class GameManager : MonoBehaviour
 {
-
-    public bool createTileBackground = true;
     private ArrayList tiles;
 
     private GUIController gui;
@@ -25,6 +23,8 @@ public class GameManager : MonoBehaviour
 
     public int numEnemies = 7;
     private ArrayList enemies;
+
+    private float playTime = 0;
 
     // set value because WorldBounds is this size
     private int width = 50, height = 50;
@@ -56,10 +56,7 @@ public class GameManager : MonoBehaviour
         {
             if (Time.time - gameoverTimestamp >= 2f)
             {
-                if (state == GameState.WON)
-                    SceneManager.LoadScene("GameWon");
-                else
-                    SceneManager.LoadScene("GameLost");
+                GameOver();
             }
         }
 
@@ -75,6 +72,11 @@ public class GameManager : MonoBehaviour
                 Time.timeScale = 1;
             }
         }
+
+        if (!paused)
+        {
+            playTime += Time.deltaTime;   
+        }
     }
 
     private void CheckWinConditions()
@@ -86,6 +88,19 @@ public class GameManager : MonoBehaviour
             Instantiate(fadeOut);
             gui.gameObject.SetActive(false);
         }
+    }
+
+    private void GameOver()
+    {
+        if (state == GameState.WON)
+            GameOverManager.infoWon = true;
+        else
+            GameOverManager.infoWon = false;
+
+        GameOverManager.infoScore = 999;
+        GameOverManager.infoTime = (int) playTime;
+
+        SceneManager.LoadScene("GameOver");
     }
 
     public void PlayerDied()
@@ -113,9 +128,9 @@ public class GameManager : MonoBehaviour
         bounds.transform.parent = transform;
 
         // Generate tiles
-        for (int y = 0; y < height; y+=3)
+        for (int y = 3; y <= height-3; y+=3)
         {
-            for (int x = 0; x < width; x+=3)
+            for (int x = 3; x <= width-3; x+=3)
             {
                 int rr = Random.Range(0, 100);
                 if (rr <= 10)
