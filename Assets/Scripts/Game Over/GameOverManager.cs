@@ -24,19 +24,14 @@ public class GameOverManager : MonoBehaviour {
     {
         if (Input.GetKey(KeyCode.Escape))
         {
-            // reset everything, not mandatory
-            infoWon = true;
-            infoScore = -1;
-            infoTime = -1;
-
-            SceneManager.LoadScene("MainMenu");
+            Back();
         }
     }
 
     void ReloadText()
     {
         if (infoWon) 
-            textStatus.text = "You won!";
+            textStatus.text = "You won.";
         else 
             textStatus.text = "You lost.";
 
@@ -52,5 +47,15 @@ public class GameOverManager : MonoBehaviour {
             sec = "0" + sec;
 
         textTime.text = "Time: " + min + ":" + sec;
+    }
+
+    public void Back()
+    {
+        // reset everything, not mandatory
+        infoWon = true;
+        infoScore = -1;
+        infoTime = -1;
+
+        SceneManager.LoadScene("MainMenu");
     }
 }
