@@ -37,7 +37,7 @@ public class MainMenuScript : MonoBehaviour {
 
             if (isEnter)
             {
-                SceneManager.LoadScene("Game");
+                SceneManager.LoadScene("LevelSelect");
             }
         }
         else if(selectedIndex == 1)
