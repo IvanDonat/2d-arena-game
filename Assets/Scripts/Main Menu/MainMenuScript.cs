@@ -16,6 +16,8 @@ public class MainMenuScript : MonoBehaviour {
 
     void Awake()
     {
+        Cursor.visible = false;
+        
         unselectedColor = btnPlay.color;
     }
 
