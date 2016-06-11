@@ -29,10 +29,7 @@ public class LevelSelectManager : MonoBehaviour {
     private void SetupLevelList()
     {
         levels = new ArrayList();
-        for (int i = 1; i <= 50; i++)
-        {
-            levels.Add(new Level(i.ToString(), "Game", "level " + i.ToString()));
-        }
+        levels.Add(new Level("Introduction level", "Game", "Easy Level..."));
 
         if (levels.Count < levelListObjects.Length)
         {
