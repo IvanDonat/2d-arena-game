@@ -48,7 +48,7 @@ public class MainMenuScript : MonoBehaviour {
 
             if (isEnter)
             {
-                Debug.Log("NO OPTIONS IMPLEMENTED");
+                SceneManager.LoadScene("Options");
             }
         }
         else

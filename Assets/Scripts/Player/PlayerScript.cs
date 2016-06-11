@@ -51,6 +51,9 @@ public class PlayerScript : MonoBehaviour
 
     void Update()
     {
+        if (gm.IsGameOver())
+            return;
+
         if (gm.GetPaused())
         {
             gui.SetPaused(true);
@@ -90,6 +93,9 @@ public class PlayerScript : MonoBehaviour
 
     void FixedUpdate()
     {
+        if (gm.IsGameOver())
+            return;
+
         InputInfo ii = GetInput();
         Vector2 moveDirKeys = new Vector2(ii.right, ii.up);
 

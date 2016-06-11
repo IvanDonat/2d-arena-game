@@ -12,8 +12,8 @@ public class LevelSelectManager : MonoBehaviour {
 
     public Text txtLevelName;
     public Text txtLevelDesc;
+    public Text txtLevelPBScore;
     public Text txtLevelPBTime;
-    public Text txtLevelPBscore;
 
     private Level selectedLevel;
     private int selectedLevelIndex;
@@ -111,8 +111,9 @@ public class LevelSelectManager : MonoBehaviour {
 
         txtLevelName.text = selectedLevel.name;
         txtLevelDesc.text = selectedLevel.description;
-        txtLevelPBTime.text = "Time: NA";
-        txtLevelPBscore.text = "Score: NA";
+
+        txtLevelPBScore.text = "Score: " + SaveManagement.GetPersonalBestScore(selectedLevel.sceneName);
+        txtLevelPBTime.text = "Time: " +  SaveManagement.GetPersonalBestTime(selectedLevel.sceneName);
     }
 }
 

@@ -97,8 +97,20 @@ public class GameManager : MonoBehaviour
         else
             GameOverManager.infoWon = false;
 
-        GameOverManager.infoScore = 999;
+        int score = 0;
+        score += (int) Mathf.Clamp(1000 - playTime*2, 0, Mathf.Infinity);
+
+        GameOverManager.infoScore = score;
         GameOverManager.infoTime = (int) playTime;
+        GameOverManager.scene = SceneManager.GetActiveScene().name;
+
+        if (state == GameState.LOST)
+            GameOverManager.infoScore = 0;
+
+        if (state == GameState.WON)
+        {
+            SaveManagement.SaveScore(GameOverManager.scene, GameOverManager.infoScore, GameOverManager.infoTime);
+        }
 
         SceneManager.LoadScene("GameOver");
     }
@@ -221,5 +233,10 @@ public class GameManager : MonoBehaviour
     public bool GetPaused()
     {
         return paused;
+    }
+
+    public bool IsGameOver()
+    {
+        return state == GameState.LOST || state == GameState.WON;
     }
 }
