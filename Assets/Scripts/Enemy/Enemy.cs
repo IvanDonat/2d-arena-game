@@ -54,11 +54,15 @@ public class Enemy : MonoBehaviour
             player = GameObject.FindGameObjectWithTag("Player").transform;
 
         debris = transform.FindChild("Debris");
-        debris.gameObject.SetActive(false);
+        if(debris)
+            debris.gameObject.SetActive(false);
 
         maxHealth = health;
-        healthBar.SetMaxHealth(maxHealth);
-        healthBar.SetHealth(health);
+        if (healthBar)
+        {
+            healthBar.SetMaxHealth(maxHealth);
+            healthBar.SetHealth(health);
+        }
 
         holdDistance += Random.Range(0f, 4f);
 
@@ -162,7 +166,8 @@ public class Enemy : MonoBehaviour
     {
         health -= dmg;
         health = Mathf.Clamp(health, 0, maxHealth);
-        healthBar.SetHealth(health);
+        if(healthBar)
+            healthBar.SetHealth(health);
 
         if (dmg > 0)
         {
@@ -189,12 +194,16 @@ public class Enemy : MonoBehaviour
                 deathSound.Play();
             }
 
-            Destroy(healthBar.gameObject);
+            if(healthBar)
+                Destroy(healthBar.gameObject);
 
-            debris.gameObject.SetActive(true);
-            debris.parent = null;
-            debris.GetComponent<PickupWeapon>().SetWeapon(currentGun.transform.name);
-            debris.GetComponent<SpriteRenderer>().color = tint;
+            if (debris)
+            {
+                debris.gameObject.SetActive(true);
+                debris.parent = null;
+                debris.GetComponent<PickupWeapon>().SetWeapon(currentGun.transform.name);
+                debris.GetComponent<SpriteRenderer>().color = tint;
+            }
 
             Destroy(gameObject);
         }
