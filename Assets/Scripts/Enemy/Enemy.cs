@@ -10,12 +10,12 @@ public enum EnemyState
 
 public class Enemy : MonoBehaviour
 {
-
     private Rigidbody2D rbody;
     private EnemyHeadScript headScript;
     public ParticleSystem particleDeath;
     public HealthBarScript healthBar;
 
+    public Color tint;
     public Transform debris;
 
     private GunScript currentGun;
@@ -44,8 +44,12 @@ public class Enemy : MonoBehaviour
 
     void Awake()
     {
+        if (tint.a <= 0.9f)
+            Debug.Log("Tint alpha <= 0.9f on: " + transform.name);
+
         rbody = GetComponent<Rigidbody2D>();
         headScript = GetComponentInChildren<EnemyHeadScript>();
+        headScript.GetComponent<SpriteRenderer>().color = tint;
         if(GameObject.FindGameObjectWithTag("Player"))
             player = GameObject.FindGameObjectWithTag("Player").transform;
 
@@ -58,7 +62,7 @@ public class Enemy : MonoBehaviour
 
         holdDistance += Random.Range(0f, 4f);
 
-        currentGun = guns[Random.Range(0, guns.Length)];
+        SetWeapon(guns[Random.Range(0, guns.Length)].name);
     }
 
     public virtual void Update()
@@ -190,6 +194,7 @@ public class Enemy : MonoBehaviour
             debris.gameObject.SetActive(true);
             debris.parent = null;
             debris.GetComponent<PickupWeapon>().SetWeapon(currentGun.transform.name);
+            debris.GetComponent<SpriteRenderer>().color = tint;
 
             Destroy(gameObject);
         }
@@ -197,13 +202,14 @@ public class Enemy : MonoBehaviour
 
     public bool SetWeapon(string wep)
     {
-        if (wep == currentGun.transform.name)
+        if (currentGun && wep == currentGun.transform.name)
             return false;
         foreach (GunScript gs in guns)
         {
             if (gs.transform.name == wep)
             {
                 currentGun = gs;
+                currentGun.color = tint;
                 return true;
             }
         }
