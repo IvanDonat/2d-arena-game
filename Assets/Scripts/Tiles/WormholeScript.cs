@@ -2,17 +2,18 @@
 using System.Collections;
 
 public class WormholeScript : MonoBehaviour {
+    public Transform linkedTo;
 
-    public float radius = 15f;
-    public float force = 10f;
+    private float radius = 5f;
+    private float force = 5f;
 
-    private GameManager gm;
+   // private GameManager gm;
 
     private Transform player;
     private float lookedForPlayerTime;
 
     void Start () {
-        gm = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
+        //gm = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
         if (GameObject.FindGameObjectWithTag("Player"))
             player = GameObject.FindGameObjectWithTag("Player").transform;
     }
@@ -29,10 +30,12 @@ public class WormholeScript : MonoBehaviour {
     }
 
     void FixedUpdate () {
-        foreach (GameObject g in gm.GetEnemies())
+       /* Disabled applying force
+        * 
+        * foreach (GameObject g in gm.GetEnemies())
         {
             ApplyForce(g.GetComponent<Rigidbody2D>());
-        }
+        } */
 
         if (player)
             ApplyForce(player.GetComponent<Rigidbody2D>());
@@ -50,7 +53,9 @@ public class WormholeScript : MonoBehaviour {
 
     void OnTriggerEnter2D(Collider2D c)
     {
-        GameObject[] exits = GameObject.FindGameObjectsWithTag("WormholeExit");
-        c.transform.position = exits[Random.Range(0, exits.Length)].transform.position;
+        if (linkedTo)
+            c.transform.position = linkedTo.position;
+        else
+            Debug.Log("Wormhole: " + transform.name + " not linked");
     }
 }

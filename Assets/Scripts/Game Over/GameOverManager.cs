@@ -9,6 +9,7 @@ public class GameOverManager : MonoBehaviour {
     public static bool infoWon = true;
     public static int  infoScore = -1;
     public static int  infoTime = -1;
+    public static bool infoNewBest = false;
     public static string scene;
 
     // gui
@@ -17,6 +18,7 @@ public class GameOverManager : MonoBehaviour {
     public Text textTime;
     public Text textPBScore;
     public Text textPBTime;
+    public Text textPBNewBest;
 
     void Start()
     {
@@ -52,6 +54,11 @@ public class GameOverManager : MonoBehaviour {
 
         textPBScore.text = "Score: " + SaveManagement.GetPersonalBestScore(scene);
         textPBTime.text = "Time: " + SaveManagement.GetPersonalBestTime(scene);
+
+        if (infoNewBest)
+            textPBNewBest.gameObject.SetActive(true);
+        else
+            textPBNewBest.gameObject.SetActive(false);
     }
 
     public void Back()
@@ -60,6 +67,7 @@ public class GameOverManager : MonoBehaviour {
         infoWon = true;
         infoScore = -1;
         infoTime = -1;
+        infoNewBest = false;
 
         SceneManager.LoadScene("LevelSelect");
     }

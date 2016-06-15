@@ -18,6 +18,8 @@ public class BulletScript : MonoBehaviour
     public float timeToDestroy = 3f;
     private float spawnTime;
 
+    public float dissapearTime = 5f; // different than explosion, causes fade and destroy
+
     public bool areaDamage = false;
     public int areaRadius;
 
@@ -33,7 +35,10 @@ public class BulletScript : MonoBehaviour
 
     private GameManager gm;
     private Rigidbody2D rbody;
+    private SpriteRenderer rend;
     private bool ownerSet = false;
+
+    private static Color transparent = new Color(0, 0, 0, 0);
 
     void Start()
     {
@@ -41,10 +46,15 @@ public class BulletScript : MonoBehaviour
 
         rbody = GetComponent<Rigidbody2D>();
         rbody.velocity = transform.right * speed;
+        rend = GetComponent<SpriteRenderer>();
         soundSpawn.transform.parent = null;
         soundSpawn.gameObject.AddComponent<DestroyAfterTime>();
 
         spawnTime = Time.time;
+
+        // dissapear only if classic bullet which destroys on hit
+        if (destroyType != DestroyType.HIT)
+            dissapearTime = 99999;
     }
 
     // set whether this is a player-owned or enemy-owned bullet
@@ -72,6 +82,13 @@ public class BulletScript : MonoBehaviour
 
     void Update()
     {
+        if (Time.time >= spawnTime + dissapearTime - 0.5f)
+        {
+            rend.color = Color.Lerp(rend.color, transparent, (Time.time - spawnTime - dissapearTime + 0.5f) / 0.5f);
+            if (Time.time >= spawnTime + dissapearTime)
+                Destroy(gameObject);
+        }
+
         if ((destroyType == DestroyType.TIME || destroyType == DestroyType.BOTH) && Time.time - spawnTime >= timeToDestroy)
         {
             Explode();

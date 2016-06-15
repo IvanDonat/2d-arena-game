@@ -29,7 +29,7 @@ public class LevelSelectManager : MonoBehaviour {
     private void SetupLevelList()
     {
         levels = new ArrayList();
-        levels.Add(new Level("Introduction level", "Game", "Easy Level..."));
+        levels.Add(new Level("To Battle I", "Win by elimination\n\nThis level will introduce you to several different kinds of enemies\n\nEasy level", "To Battle I"));
 
         if (levels.Count < levelListObjects.Length)
         {
@@ -117,13 +117,13 @@ public class LevelSelectManager : MonoBehaviour {
 public class Level
 {
     public string name;
-    public string sceneName;
     public string description;
+    public string sceneName;
 
-    public Level(string name, string sceneName, string description)
+    public Level(string name, string description, string sceneName)
     {
         this.name = name;
-        this.sceneName = sceneName;
         this.description = description;
+        this.sceneName = sceneName;
     }
 }

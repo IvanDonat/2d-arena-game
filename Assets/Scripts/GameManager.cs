@@ -18,10 +18,9 @@ public class GameManager : MonoBehaviour
     public bool pausable = false;
 
     private GameState state = GameState.PLAYING;
-    public Transform fadeOut;
+    public Transform fadeIn;
     private float gameoverTimestamp;
 
-    public int numEnemies = 7;
     private ArrayList enemies;
 
     private float playTime = 0;
@@ -42,9 +41,8 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         tiles = new ArrayList();
-        GenerateArena();
-        SpawnPlayerAndEnemies();
 
+        // set because of WorldBounds size
         Camera.main.GetComponent<CameraScript>().SetBounds(width, height);
     }
 
@@ -85,7 +83,7 @@ public class GameManager : MonoBehaviour
         {
             state = GameState.WON;
             gameoverTimestamp = Time.time;
-            Instantiate(fadeOut);
+            Instantiate(fadeIn);
             gui.gameObject.SetActive(false);
         }
     }
@@ -105,11 +103,17 @@ public class GameManager : MonoBehaviour
         GameOverManager.scene = SceneManager.GetActiveScene().name;
 
         if (state == GameState.LOST)
+        {
             GameOverManager.infoScore = 0;
+            GameOverManager.infoNewBest = false;
+        }
 
         if (state == GameState.WON)
         {
-            SaveManagement.SaveScore(GameOverManager.scene, GameOverManager.infoScore, GameOverManager.infoTime);
+            if (SaveManagement.SaveScore(GameOverManager.scene, GameOverManager.infoScore, GameOverManager.infoTime))
+                GameOverManager.infoNewBest = true;
+            else
+                GameOverManager.infoNewBest = false;
         }
 
         SceneManager.LoadScene("GameOver");
@@ -121,72 +125,8 @@ public class GameManager : MonoBehaviour
         {
             state = GameState.LOST;
             gameoverTimestamp = Time.time;
-            Instantiate(fadeOut);
+            Instantiate(fadeIn);
             gui.gameObject.SetActive(false);
-        }
-    }
-
-    void GenerateArena()
-    {
-        GameObject tileParent = new GameObject("Tiles");
-        tileParent.transform.parent = transform;
-
-        // Create background
-        int offset_w = -Mathf.FloorToInt(width / 2);
-        int offset_h = Mathf.FloorToInt(height / 2);
-       
-        GameObject bounds = Instantiate(Resources.Load(Paths.SCENE + "WorldBounds"), Vector3.zero, Quaternion.identity) as GameObject;
-        bounds.transform.position = Vector3.zero;
-        bounds.transform.parent = transform;
-
-        // Generate tiles
-        for (int y = 3; y <= height-3; y+=3)
-        {
-            for (int x = 3; x <= width-3; x+=3)
-            {
-                int rr = Random.Range(0, 100);
-                if (rr <= 10)
-                {
-                    GameObject instance = Instantiate(Resources.Load(Paths.ARENA + "Meteor", typeof(GameObject))) as GameObject;
-                    instance.transform.position = new Vector2(x + offset_w + Random.Range(-1, 1), -y + offset_h + Random.Range(-1, 1));
-
-                    float scale = Random.Range(0.3f, 3f);
-                    instance.transform.localScale = new Vector3(scale, scale, 1);
-
-                    instance.transform.parent = tileParent.transform;
-                    tiles.Add(instance);
-                }
-
-                if (rr > 10 && rr <= 12)
-                {
-                    GameObject instance = Instantiate(Resources.Load(Paths.ARENA + "Wormhole", typeof(GameObject))) as GameObject;
-                    instance.transform.position = new Vector2(x + offset_w + Random.Range(-1, 1), -y + offset_h + Random.Range(-1, 1));
-
-                    instance.transform.parent = tileParent.transform;
-                    tiles.Add(instance);
-                }
-                if (rr > 12 && rr <= 16)
-                {
-                    GameObject instance = Instantiate(Resources.Load(Paths.ARENA + "WormholeExit", typeof(GameObject))) as GameObject;
-                    instance.transform.position = new Vector2(x + offset_w + Random.Range(-1, 1), -y + offset_h + Random.Range(-1, 1));
-
-                    instance.transform.parent = tileParent.transform;
-                    tiles.Add(instance);
-                }
-            }
-        }
-    }
-
-    void SpawnPlayerAndEnemies()
-    {
-        int offset_w = -Mathf.FloorToInt(width / 2);
-        int offset_h = Mathf.FloorToInt(height / 2);
-
-        for (int i = 0; i < numEnemies; i++)
-        {
-            Vector2 randomPos = new Vector2(Random.Range(2, width - 2) + offset_w, -Random.Range(2, height - 2) + offset_h);
-            GameObject enemy = Instantiate(Resources.Load(Paths.ENEMIES + "Huangse"), randomPos, Quaternion.identity) as GameObject;
-            enemies.Add(enemy);
         }
     }
 

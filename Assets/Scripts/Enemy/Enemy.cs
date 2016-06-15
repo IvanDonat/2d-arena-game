@@ -8,6 +8,12 @@ public enum EnemyState
     RETREATING
 };
 
+public enum MoveStyle
+{
+    STANDARD,
+    BURSTS
+}
+
 public class Enemy : MonoBehaviour
 {
     private Rigidbody2D rbody;
@@ -21,13 +27,20 @@ public class Enemy : MonoBehaviour
     private GunScript currentGun;
     public GunScript[] guns;
 
+    public MoveStyle style = MoveStyle.STANDARD;
     public float moveForce = 0.7f;
+    public float burstInterval = 3f;
+    private float stepsSinceLastBurst = 100f;
 
     [System.NonSerialized]
     public float maxHealth;
     public float health = 75;
 
     private float holdDistance = 1;
+
+    public bool silentUntilProvoked = false;
+    public float provokedRange = 3f;
+    private bool provoked = false;
 
     public AudioSource deathSound;   
 
@@ -79,10 +92,7 @@ public class Enemy : MonoBehaviour
             evadeDirResetInterval = Random.Range(0.2f, 1f);
         }
 
-        if (player)
-        {
-        }
-        else
+        if (!player)
         {
             // Look every second
             if (Time.time - lastLookedForPlayer > 1f)
@@ -96,6 +106,8 @@ public class Enemy : MonoBehaviour
             }
         }
             
+        if (silentUntilProvoked && !provoked)
+            return;
 
         InputInfo emulatedII; 
 
@@ -137,11 +149,15 @@ public class Enemy : MonoBehaviour
             {
                 state = EnemyState.ROAMING;
             }
+
+            if ((closestEnemy.position - transform.position).sqrMagnitude <= provokedRange * provokedRange)
+                provoked = true;
         }
 
+        if (silentUntilProvoked && !provoked)
+            return;
+        
         Vector2 moveDir = Vector2.zero;
-
-
         if (state == EnemyState.AGRESSIVE || state == EnemyState.RETREATING)
         {
 
@@ -159,7 +175,17 @@ public class Enemy : MonoBehaviour
 
         moveDir.Normalize();
         moveDir += evadeDir;
-        rbody.AddForce(moveDir.normalized * moveForce, ForceMode2D.Impulse);
+        if (style == MoveStyle.STANDARD)
+            rbody.AddForce(moveDir.normalized * moveForce, ForceMode2D.Impulse);
+        else if (style == MoveStyle.BURSTS)
+        {
+            stepsSinceLastBurst++;
+            if (stepsSinceLastBurst >= burstInterval)
+            {
+                rbody.AddForce(moveDir.normalized * moveForce, ForceMode2D.Impulse);
+                stepsSinceLastBurst = 0;
+            }
+        }
     }
 
     public void TakeDamage(float dmg)
@@ -171,6 +197,7 @@ public class Enemy : MonoBehaviour
 
         if (dmg > 0)
         {
+            provoked = true;
             GameObject damageNum = (GameObject) GameObject.Instantiate(Resources.Load(Paths.DAMAGE_NUMBERS), transform.position + (Vector3.up * transform.localScale.y), Quaternion.identity);;
             damageNum.GetComponent<DamageNumbersScript>().SetDamage(dmg);
         }

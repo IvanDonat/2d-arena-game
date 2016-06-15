@@ -21,9 +21,6 @@ public class CameraScript : MonoBehaviour
     {
         if(GameObject.FindGameObjectWithTag("Player"))
             player = GameObject.FindGameObjectWithTag("Player").transform;
-        
-        if (GameObject.FindGameObjectWithTag("Enemy"))
-            enemy = GameObject.FindGameObjectWithTag("Enemy").transform;
 
         lastLookedForPlayer = Time.time;
     }
@@ -39,13 +36,25 @@ public class CameraScript : MonoBehaviour
         }
         else
         {
+            // pick closest
+            // for example when player dies
+
             pickEnemyResetTime -= Time.deltaTime;
             if(!enemy || pickEnemyResetTime <= 0)
             {
                 GameObject[] en = GameObject.FindGameObjectsWithTag("Enemy");
                 if (en.Length > 0)
                 {
-                    enemy = en[Random.Range(0, en.Length)].transform;
+                    float dist = 1000f;
+                    foreach (GameObject e in en)
+                    {
+                        if (Vector3.Distance(transform.position, e.transform.position) < dist)
+                        {
+                            enemy = e.transform;
+                            dist = Vector3.Distance(transform.position, e.transform.position);
+                        }
+                    }
+
                     pickEnemyResetTime = 10f;
                 }
                 else
@@ -55,7 +64,7 @@ public class CameraScript : MonoBehaviour
                 }
             }
 
-            Vector3 pos = (enemy != null) ? enemy.position : Vector3.zero;
+            Vector3 pos = (enemy != null) ? enemy.position : transform.position;
             Vector3 point = Camera.main.WorldToViewportPoint(pos);
             Vector3 delta = pos - Camera.main.ViewportToWorldPoint(new Vector3(0.5f, 0.5f, point.z));
             destination = transform.position + delta;
@@ -71,6 +80,7 @@ public class CameraScript : MonoBehaviour
                 lastLookedForPlayer = Time.time;
             }
         }
+
         transform.position = Vector3.SmoothDamp(transform.position, destination, ref velocity, dampTime);
 
         ClampPosition();
