@@ -12,6 +12,7 @@ public class LevelSelectManager : MonoBehaviour {
 
     public Text txtLevelName;
     public Text txtLevelDesc;
+    public Text txtLevelDifficulty;
     public Text txtLevelPBScore;
     public Text txtLevelPBTime;
 
@@ -29,7 +30,7 @@ public class LevelSelectManager : MonoBehaviour {
     private void SetupLevelList()
     {
         levels = new ArrayList();
-        levels.Add(new Level("To Battle I", "Win by elimination\n\nThis level will introduce you to several different kinds of enemies\n\nEasy level", "To Battle I"));
+        levels.Add(new Level("To Battle I", "Win by elimination\n\nThis level will introduce you to several different kinds of enemies", Difficulty.EASY, "To Battle I"));
 
         if (levels.Count < levelListObjects.Length)
         {
@@ -108,6 +109,7 @@ public class LevelSelectManager : MonoBehaviour {
 
         txtLevelName.text = selectedLevel.name;
         txtLevelDesc.text = selectedLevel.description;
+        txtLevelDifficulty.text = "Difficulty: " + selectedLevel.difficulty.ToString();
 
         txtLevelPBScore.text = "Score: " + SaveManagement.GetPersonalBestScore(selectedLevel.sceneName);
         txtLevelPBTime.text = "Time: " +  SaveManagement.GetPersonalBestTime(selectedLevel.sceneName);
@@ -118,12 +120,22 @@ public class Level
 {
     public string name;
     public string description;
+    public Difficulty difficulty;
     public string sceneName;
 
-    public Level(string name, string description, string sceneName)
+    public Level(string name, string description, Difficulty difficulty, string sceneName)
     {
         this.name = name;
         this.description = description;
+        this.difficulty = difficulty;
         this.sceneName = sceneName;
     }
+}
+
+public enum Difficulty
+{
+    EASY,
+    NORMAL,
+    HARD,
+    INSANE
 }
