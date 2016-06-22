@@ -66,10 +66,14 @@ public class GUIController : MonoBehaviour {
             }
 
             // @TODO maybe add fade in/out
-            if (curr.timeOn <= 0)
+            if (curr.timeOn <= 0.1f)
             {
-                notifications.RemoveAt(0);
+                guiNotification.enabled = false;
+                if (curr.timeOn <= 0f)
+                    notifications.RemoveAt(0);
             }
+            else
+                guiNotification.enabled = true;
         }
         else
         {
