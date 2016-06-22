@@ -204,8 +204,11 @@ public class Enemy : MonoBehaviour
 
         if (health <= 0)
         {   
+            string name = transform.name;
+            if (name.Contains("("))
+                name = name.Substring(0, name.IndexOf("(") - 1);
             if(GameObject.FindGameObjectWithTag("GUI"))
-                GameObject.FindGameObjectWithTag("GUI").SendMessage("PushNotification", "-1 enemy");
+                GameObject.FindGameObjectWithTag("GUI").SendMessage("PushNotification", "Destroyed " + name);
 
             if (particleDeath)
             {           
