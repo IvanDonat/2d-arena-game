@@ -3,7 +3,6 @@ using System.Collections;
 
 public class Tile : MonoBehaviour
 {
-
     public bool destroyable = true;
     private float maxHealth;
     public float health = 15f;

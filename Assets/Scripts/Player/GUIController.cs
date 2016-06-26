@@ -24,6 +24,9 @@ public class GUIController : MonoBehaviour {
     public Text guiEnemyCount; 
     private int enemyCount = -1;
 
+    public Text guiStationCount;
+    private int stationCount = -1;
+
     public Text guiNotification;
     public AudioSource guiSndNotification;
     private ArrayList notifications;
@@ -47,6 +50,9 @@ public class GUIController : MonoBehaviour {
 
         guiEnemyCount.text = "ENEMIES: " + enemyCount.ToString();
         guiEnemyCount.color = Color.Lerp(guiEnemyCount.color, initialHPColor, Time.deltaTime * 2f);
+
+        guiStationCount.text = "STATIONS: " + stationCount.ToString();
+        guiStationCount.color = Color.Lerp(guiStationCount.color, initialHPColor, Time.deltaTime * 2f);
 
         if (notifications.Count != 0)
         {
@@ -99,6 +105,13 @@ public class GUIController : MonoBehaviour {
         if (c != enemyCount)
             guiEnemyCount.color = Color.gray;
         enemyCount = c;
+    }
+
+    public void SetStationCount(int c)
+    {
+        if (c != stationCount)
+            guiStationCount.color = Color.gray;
+        stationCount = c;
     }
 
     public void PushNotification(string not)

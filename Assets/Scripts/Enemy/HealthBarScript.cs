@@ -30,12 +30,13 @@ public class HealthBarScript : MonoBehaviour {
         colorEmpty.a = transparency;
     }
 
-    void Update()
+    void LateUpdate()
     {
         if (!owner)
             Destroy(gameObject);
 
         transform.position = owner.position + (Vector3.up * offset);
+        transform.rotation = Quaternion.identity;
         transform.localScale = Vector3.Lerp(transform.localScale, new Vector3(health / 20f, transform.localScale.y, transform.localScale.z), Time.deltaTime * 10f);
         render.color = Color.Lerp(colorEmpty, colorFull, health / maxHealth);
     }

@@ -82,6 +82,7 @@ public class PlayerScript : MonoBehaviour
         if (Time.time - enemyCountLastUpdated >= enemyCountUpdateInterval)
         {
             gui.SetEnemyCount(gm.GetEnemies().Count);
+            gui.SetStationCount(gm.GetStations().Count);
 
             enemyCountLastUpdated = Time.time;
         }

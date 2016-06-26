@@ -206,7 +206,7 @@ public class Enemy : MonoBehaviour
         {   
             string name = transform.name;
             if (name.Contains("("))
-                name = name.Substring(0, name.IndexOf("(") - 1);
+                name = name.Substring(0, name.IndexOf("("));
             if(GameObject.FindGameObjectWithTag("GUI"))
                 GameObject.FindGameObjectWithTag("GUI").SendMessage("PushNotification", "Destroyed " + name);
 

@@ -22,6 +22,7 @@ public class GameManager : MonoBehaviour
     private float gameoverTimestamp;
 
     private ArrayList enemies;
+    private ArrayList stations; // spawners
 
     private float playTime = 0;
 
@@ -33,8 +34,9 @@ public class GameManager : MonoBehaviour
     void Awake()
     {
         enemies = new ArrayList();
-        foreach(GameObject en in GameObject.FindGameObjectsWithTag("Enemy"))
-            enemies.Add(en);
+        stations = new ArrayList();
+        RefreshEnemyList();
+        RefreshStationList();
         gui = GameObject.FindGameObjectWithTag("GUI").GetComponent<GUIController>();
     }
 
@@ -79,7 +81,7 @@ public class GameManager : MonoBehaviour
 
     private void CheckWinConditions()
     {
-        if (state == GameState.PLAYING && GetEnemies().Count == 0)
+        if (state == GameState.PLAYING && GetEnemies().Count == 0 && GetStations().Count == 0)
         {
             state = GameState.WON;
             gameoverTimestamp = Time.time;
@@ -143,6 +145,20 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public void RefreshEnemyList()
+    {
+        enemies.Clear();
+        foreach(GameObject en in GameObject.FindGameObjectsWithTag("Enemy"))
+            enemies.Add(en);
+    }
+
+    public void RefreshStationList()
+    {
+        stations.Clear();
+        foreach(GameObject en in GameObject.FindGameObjectsWithTag("SpaceStation"))
+            stations.Add(en);
+    }
+
     // Returns all GameObject tiles around a point (xf_c, yf_c) with a given radius
     public ArrayList GetTiles()
     {
@@ -168,6 +184,19 @@ public class GameManager : MonoBehaviour
         foreach (GameObject t in toRemove)
             enemies.Remove(t);
         return enemies;
+    }
+
+    public ArrayList GetStations()
+    {
+        ArrayList toRemove = new ArrayList();
+        foreach (GameObject go in stations)
+        {
+            if (!go)
+                toRemove.Add(go);
+        }
+        foreach (GameObject t in toRemove)
+            stations.Remove(t);
+        return stations;
     }
 
     public bool GetPaused()
