@@ -111,7 +111,10 @@ public class BulletScript : MonoBehaviour
                 {
                     if (transform.tag == "PlayerBullet")
                     {
-                        ArrayList enemies = gm.GetEnemies();
+                        ArrayList enemies = new ArrayList();
+                        enemies.AddRange(gm.GetEnemies());
+                        enemies.AddRange(gm.GetStations());
+
                         float minDist = homingDist;
                         foreach(GameObject en in enemies)
                         {
@@ -188,14 +191,17 @@ public class BulletScript : MonoBehaviour
         }
         else
         {
-            ArrayList tiles = gm.GetTiles();
-            foreach (GameObject tile in tiles)
+            ArrayList things = new ArrayList();
+            things.AddRange(gm.GetTiles());
+            things.AddRange(gm.GetStations());
+
+            foreach (GameObject tile in things)
             {
-                if ((tile.transform.position - transform.position).sqrMagnitude > areaRadius * areaRadius)
+                float tileRadius = tile.transform.GetComponent<CircleCollider2D>().radius * tile.transform.localScale.x;
+                if ((tile.transform.position - transform.position).sqrMagnitude - tileRadius * tileRadius > areaRadius * areaRadius)
                     continue;
                 
                 Vector2 deltaPos = transform.position - tile.transform.position;
-                float tileRadius = (tile.transform.localScale.x + tile.transform.localScale.y) / 2;
                 float calculatedDamage = dmg - ((deltaPos.magnitude - tileRadius) / areaRadius)*dmg;
                 tile.gameObject.SendMessage("TakeDamage", calculatedDamage, SendMessageOptions.DontRequireReceiver);
             }

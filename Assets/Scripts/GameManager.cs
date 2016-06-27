@@ -11,7 +11,6 @@ public enum GameState
 
 public class GameManager : MonoBehaviour
 {
-    private ArrayList tiles;
 
     private GUIController gui;
 
@@ -21,6 +20,7 @@ public class GameManager : MonoBehaviour
     public Transform fadeIn;
     private float gameoverTimestamp;
 
+    private ArrayList tiles;
     private ArrayList enemies;
     private ArrayList stations; // spawners
 
@@ -33,17 +33,18 @@ public class GameManager : MonoBehaviour
 
     void Awake()
     {
+        tiles = new ArrayList();
         enemies = new ArrayList();
         stations = new ArrayList();
+        RefreshTileList();
         RefreshEnemyList();
         RefreshStationList();
+
         gui = GameObject.FindGameObjectWithTag("GUI").GetComponent<GUIController>();
     }
 
     void Start()
     {
-        tiles = new ArrayList();
-
         // set because of WorldBounds size
         Camera.main.GetComponent<CameraScript>().SetBounds(width, height);
     }
@@ -145,6 +146,13 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public void RefreshTileList()
+    {
+        tiles.Clear();
+        foreach (GameObject t in GameObject.FindGameObjectsWithTag("Tile"))
+            tiles.Add(t);
+    }
+
     public void RefreshEnemyList()
     {
         enemies.Clear();
@@ -155,47 +163,28 @@ public class GameManager : MonoBehaviour
     public void RefreshStationList()
     {
         stations.Clear();
-        foreach(GameObject en in GameObject.FindGameObjectsWithTag("SpaceStation"))
-            stations.Add(en);
+        foreach(GameObject s in GameObject.FindGameObjectsWithTag("SpaceStation"))
+            stations.Add(s);
     }
 
-    // Returns all GameObject tiles around a point (xf_c, yf_c) with a given radius
     public ArrayList GetTiles()
     {
-        ArrayList toRemove = new ArrayList();
-        foreach (GameObject go in tiles)
-        {
-            if (!go)
-                toRemove.Add(go);
-        }
-        foreach (GameObject t in toRemove)
-            tiles.Remove(t);
+        while (tiles.Contains(null))
+            tiles.RemoveAt(tiles.IndexOf(null));
         return tiles;
     }
 
     public ArrayList GetEnemies()
     {
-        ArrayList toRemove = new ArrayList();
-        foreach (GameObject go in enemies)
-        {
-            if (!go)
-                toRemove.Add(go);
-        }
-        foreach (GameObject t in toRemove)
-            enemies.Remove(t);
+        while (enemies.Contains(null))
+            enemies.RemoveAt(enemies.IndexOf(null));
         return enemies;
     }
 
     public ArrayList GetStations()
     {
-        ArrayList toRemove = new ArrayList();
-        foreach (GameObject go in stations)
-        {
-            if (!go)
-                toRemove.Add(go);
-        }
-        foreach (GameObject t in toRemove)
-            stations.Remove(t);
+        while (stations.Contains(null))
+            stations.RemoveAt(stations.IndexOf(null));
         return stations;
     }
 
