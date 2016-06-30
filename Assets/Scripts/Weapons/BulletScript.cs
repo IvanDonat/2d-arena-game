@@ -184,7 +184,6 @@ public class BulletScript : MonoBehaviour
         destroyParticles.gameObject.AddComponent<DestroyAfterTime>();
         destroyParticles.Play();
 
-
         if (!areaDamage)
         {
             Debug.LogError("Bullet: " + name + "  destroys on time, but doesn't do area damage");
