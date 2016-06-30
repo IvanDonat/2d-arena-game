@@ -7,6 +7,7 @@ public class Tile : MonoBehaviour
     private float maxHealth;
     public float health = 15f;
     public ParticleSystem destroyParticles;
+    public AudioSource destroySound;
     public Transform drop;
 
     void Start()
@@ -30,6 +31,13 @@ public class Tile : MonoBehaviour
 
         if (destroyable && health <= 0)
         {
+            if (destroySound)
+            {
+                destroySound.transform.parent = null;
+                destroySound.gameObject.AddComponent<DestroyAfterTime>();
+                destroySound.Play();
+            }
+
             if (destroyParticles)
             {           
                 destroyParticles.transform.parent = null;
