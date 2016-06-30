@@ -138,16 +138,13 @@ public class PlayerScript : MonoBehaviour
         return ii;
     }
 
-    private Vector2 lastCollisionPos = Vector2.zero;
-
     void OnCollisionEnter2D(Collision2D c)
     {
-        if (c.relativeVelocity.magnitude > 5 && (lastCollisionPos - (Vector2)transform.position).magnitude > 1f
-            && (c.collider.CompareTag("Background") || c.collider.CompareTag("Tile")))
+        if (c.relativeVelocity.sqrMagnitude >= 100 && !c.transform.CompareTag("EnemyBullet"))
         {
             audioHitWall.Play();
+            TakeDamage(c.relativeVelocity.sqrMagnitude / 10);
         }
-        lastCollisionPos = transform.position;
     }
 
     public void TakeDamage(float dmg)
