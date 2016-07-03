@@ -243,6 +243,7 @@ public class Enemy : MonoBehaviour
     {
         if (currentGun && wep == currentGun.transform.name)
             return false;
+        
         foreach (GunScript gs in guns)
         {
             if (gs.transform.name == wep)
@@ -252,6 +253,7 @@ public class Enemy : MonoBehaviour
                 return true;
             }
         }
+
         Debug.LogWarning("GunScript SetWeapon(string), no such gun found: " + wep);
         return false;
     }
