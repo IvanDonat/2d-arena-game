@@ -44,6 +44,8 @@ public class GameManager : MonoBehaviour
         RefreshStationList();
 
         gui = GameObject.FindGameObjectWithTag("GUI").GetComponent<GUIController>();
+
+        cosmicRayTimer = cosmicRaySpawnInterval;
     }
 
     void Start()
