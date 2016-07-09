@@ -33,6 +33,7 @@ public class LevelSelectManager : MonoBehaviour {
         levels.Add(new Level("To Battle I", "Win by elimination\n\nThis level will introduce you to several different kinds of enemies", Difficulty.EASY));
         levels.Add(new Level("Hordes I", "Win by elimination\n\nThis level is full of small packs.", Difficulty.NORMAL));
         levels.Add(new Level("Space Base I", "Win by elimination\n\nDestroy all the Stations and Enemies of the base.", Difficulty.HARD));
+        levels.Add(new Level("Supernova I", "Win by elimination\n\nLots of radiation left.", Difficulty.INSANE));
 
         if (levels.Count < levelListObjects.Length)
         {

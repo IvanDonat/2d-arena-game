@@ -93,8 +93,18 @@ public class GameManager : MonoBehaviour
     private void SpawnCosmicRay()
     {
         // position around the edge of the world
-        int x = width + 5;
-        int y = height + 5;
+        int x;
+        int y;
+        if (Random.Range(0, 100) >= 50)
+        {
+            x = width + 3;
+            y = Random.Range(0, height) + 3;
+        }
+        else
+        {
+            x = Random.Range(0, width) + 3;
+            y = height + 3;
+        }
 
         if (Random.Range(0, 100) >= 50)
             x *= -1;
