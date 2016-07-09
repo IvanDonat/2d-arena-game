@@ -153,7 +153,7 @@ public class PlayerScript : MonoBehaviour
         health = Mathf.Clamp(health, 0, maxHealth);
         gui.SetHP((int)health);
 
-        GameObject damageNum = (GameObject) GameObject.Instantiate(Resources.Load(Paths.DAMAGE_NUMBERS), transform.position + Vector3.up, Quaternion.identity);
+        GameObject damageNum = (GameObject)GameObject.Instantiate(Resources.Load(Paths.DAMAGE_NUMBERS), transform.position + Vector3.up, Quaternion.identity);
         damageNum.GetComponent<DamageNumbersScript>().SetDamage(dmg);
 
         if (dmg < 0)
@@ -167,20 +167,33 @@ public class PlayerScript : MonoBehaviour
             g.AddComponent<DestroyAfterTime>();
         }
 
-        if (health <= 1)
-        {
-            gui.PushNotification("You died");
-            gm.PlayerDied();
+        if (health < 1)
+            Die();
+    }
 
-            if (particleDeath)
-            {           
-                particleDeath.transform.parent = null;
-                particleDeath.gameObject.AddComponent<DestroyAfterTime>();
-                particleDeath.Play();
-            }
+    public void TakeDamageSilent(float dmg)
+    {
+        health -= dmg;
+        health = Mathf.Clamp(health, 0, maxHealth);
+        gui.SetHP((int)health);
 
-            Destroy(gameObject);
+        if (health < 1)
+            Die();
+    }
+
+    private void Die()
+    {
+        gui.PushNotification("You died");
+        gm.PlayerDied();
+
+        if (particleDeath)
+        {           
+            particleDeath.transform.parent = null;
+            particleDeath.gameObject.AddComponent<DestroyAfterTime>();
+            particleDeath.Play();
         }
+
+        Destroy(gameObject);
     }
 
     public bool SetWeapon(string wep)
