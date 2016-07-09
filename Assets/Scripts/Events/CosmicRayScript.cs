@@ -8,20 +8,29 @@ public class CosmicRayScript : MonoBehaviour {
     public float continuousDamagePerSecond = 15f;
     private bool collidedWithPlayer = false;
 
-    private float disappearTime = 60f;
-    private float spawnTime;
+    private GameManager gm;
+    private float worldWidth, worldHeight;
 
     private PlayerScript ps;
 
     void Start()
     {
-        spawnTime = Time.time;
+        gm = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
+        worldWidth = gm.GetWorldDimensions().x;
+        worldHeight = gm.GetWorldDimensions().y;
+
         GetComponent<Rigidbody2D>().velocity = transform.right * speed;
     }
 
     void Update()
     {
-        if (Time.time + spawnTime >= disappearTime)
+        if (transform.position.x >= worldWidth + 5)
+            Destroy(gameObject);
+        else if (transform.position.x <= -worldWidth - 5)
+            Destroy(gameObject);
+        else if (transform.position.y >= worldHeight + 5)
+            Destroy(gameObject);
+        else if (transform.position.y <= -worldHeight - 5)
             Destroy(gameObject);
     }
 

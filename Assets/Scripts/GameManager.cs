@@ -16,6 +16,9 @@ public class GameManager : MonoBehaviour
 
     public bool pausable = false;
 
+    public float cosmicRaySpawnInterval = -1f; // negative number = disabled
+    private float cosmicRayTimer = 0;
+
     private GameState state = GameState.PLAYING;
     public Transform fadeIn;
     private float gameoverTimestamp;
@@ -76,8 +79,36 @@ public class GameManager : MonoBehaviour
 
         if (!paused)
         {
-            playTime += Time.deltaTime;   
+            playTime += Time.deltaTime;
+
+            cosmicRayTimer -= Time.deltaTime;
+            if (cosmicRaySpawnInterval > 0 && cosmicRayTimer <= 0)
+            { // negative interval = disabled
+                SpawnCosmicRay();
+                cosmicRayTimer = cosmicRaySpawnInterval;
+            }
         }
+    }
+
+    private void SpawnCosmicRay()
+    {
+        // position around the edge of the world
+        int x = width + 5;
+        int y = height + 5;
+
+        if (Random.Range(0, 100) >= 50)
+            x *= -1;
+        if (Random.Range(0, 100) >= 50)
+            y *= -1;
+
+        Vector3 position = new Vector3(x, y, 0);
+
+        Vector2 dir = - position;
+        float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+        angle += Random.Range(-30, 30);
+        Quaternion rotation = Quaternion.AngleAxis(angle, Vector3.forward);
+
+        GameObject.Instantiate(Resources.Load(Paths.EVENTS + "CosmicRays"), position, rotation);
     }
 
     private void CheckWinConditions()
@@ -186,6 +217,11 @@ public class GameManager : MonoBehaviour
         while (stations.Contains(null))
             stations.RemoveAt(stations.IndexOf(null));
         return stations;
+    }
+
+    public Vector2 GetWorldDimensions()
+    {
+        return new Vector2(width, height);
     }
 
     public bool GetPaused()
