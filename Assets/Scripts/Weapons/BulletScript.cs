@@ -18,7 +18,7 @@ public class BulletScript : MonoBehaviour
     public float timeToDestroy = 3f;
     private float spawnTime;
 
-    public float disappearTime = 5f; // different than explosion, causes fade and destroy
+    public float disappearTime = 5f;
 
     public bool areaDamage = false;
     public int areaRadius;
@@ -52,7 +52,6 @@ public class BulletScript : MonoBehaviour
 
         spawnTime = Time.time;
 
-        // dissapear only if classic bullet which destroys on hit
         if (destroyType != DestroyType.HIT)
             disappearTime = 99999;
     }
@@ -94,59 +93,66 @@ public class BulletScript : MonoBehaviour
             Explode();
         }
 
-        if (isHoming)
+        if(isHoming)
+            DoHome();
+    }
+
+    private void DoHome()
+    {
+        if (target)
         {
-            if (target)
-            {
-                Vector2 dir = target.position - transform.position;
-                float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
-                Quaternion rot = Quaternion.AngleAxis(angle, Vector3.forward);
+            Vector2 dir = target.position - transform.position;
+            float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+            Quaternion rot = Quaternion.AngleAxis(angle, Vector3.forward);
 
-                transform.rotation = Quaternion.Slerp(transform.rotation, rot, Time.deltaTime * rotateSpeed);
-                rbody.velocity = transform.right * speed;
-            }
-            else
+            transform.rotation = Quaternion.Slerp(transform.rotation, rot, Time.deltaTime * rotateSpeed);
+            rbody.velocity = transform.right * speed;
+        }
+        else
+        {
+            if (Time.time - lastLookedForTarget > 1f)
+                FindTarget();
+        }
+    }
+
+    void FindTarget()
+    {
+        if (transform.tag == "PlayerBullet")
+        {
+            ArrayList enemies = new ArrayList();
+            enemies.AddRange(gm.GetEnemies());
+            enemies.AddRange(gm.GetStations());
+
+            float minDist = homingDist;
+            foreach(GameObject en in enemies)
             {
-                if (Time.time - lastLookedForTarget > 1f)
+                Vector2 dir = new Vector2(en.transform.position.x - transform.position.x, en.transform.position.y - transform.position.y);
+
+                if (dir.magnitude < minDist)
                 {
-                    if (transform.tag == "PlayerBullet")
-                    {
-                        ArrayList enemies = new ArrayList();
-                        enemies.AddRange(gm.GetEnemies());
-                        enemies.AddRange(gm.GetStations());
-
-                        float minDist = homingDist;
-                        foreach(GameObject en in enemies)
-                        {
-                            Vector2 dir = new Vector2(en.transform.position.x - transform.position.x, en.transform.position.y - transform.position.y);
-
-                            if (dir.magnitude < minDist)
-                            {
-                                target = en.transform;
-                                minDist = dir.magnitude;
-                            }
-                        }
-                    }
-                    else if (transform.tag == "EnemyBullet")
-                    {
-                        if(GameObject.FindGameObjectWithTag("Player"))
-                            target = GameObject.FindGameObjectWithTag("Player").transform;
-                    }
-                    else
-                    {
-                        Debug.LogError("Unknown tag homing bullet, BulletScript");
-                    }
-
-                    lastLookedForTarget = Time.time;
+                    target = en.transform;
+                    minDist = dir.magnitude;
                 }
             }
         }
+        else if (transform.tag == "EnemyBullet")
+        {
+            if(GameObject.FindGameObjectWithTag("Player"))
+                target = GameObject.FindGameObjectWithTag("Player").transform;
+        }
+        else
+        {
+            Debug.LogError("Unknown tag homing bullet, BulletScript");
+        }
+
+        lastLookedForTarget = Time.time;
     }
 
     void OnTriggerEnter2D(Collider2D c)
     {
         if (c.isTrigger || !ownerSet)
             return;
+        
         if (destroyType == DestroyType.HIT || destroyType == DestroyType.BOTH)
         {
             if (!areaDamage)
@@ -184,64 +190,57 @@ public class BulletScript : MonoBehaviour
         destroyParticles.gameObject.AddComponent<DestroyAfterTime>();
         destroyParticles.Play();
 
-        if (!areaDamage)
+        ArrayList things = new ArrayList();
+        things.AddRange(gm.GetTiles());
+        things.AddRange(gm.GetStations());
+
+        foreach (GameObject tile in things)
         {
-            Debug.LogError("Bullet: " + name + "  destroys on time, but doesn't do area damage");
+            float tileRadius = tile.transform.GetComponent<CircleCollider2D>().radius * tile.transform.localScale.x;
+            if ((tile.transform.position - transform.position).sqrMagnitude - tileRadius * tileRadius > areaRadius * areaRadius)
+                continue;
+            
+            Vector2 deltaPos = transform.position - tile.transform.position;
+            float calculatedDamage = dmg - ((deltaPos.magnitude - tileRadius) / areaRadius)*dmg;
+            tile.gameObject.SendMessage("TakeDamage", calculatedDamage, SendMessageOptions.DontRequireReceiver);
+        }
+
+        if (transform.tag == "PlayerBullet")
+        {
+            var enemies = gm.GetEnemies();
+            foreach(GameObject en in enemies)
+            {
+                Vector2 deltaPos = -transform.position + en.transform.position;
+                if (deltaPos.sqrMagnitude <= areaRadius * areaRadius)
+                {
+                    float calculatedDamage = dmg - (deltaPos.magnitude / areaRadius)*dmg;
+                    en.SendMessage("TakeDamage", calculatedDamage, SendMessageOptions.RequireReceiver);
+
+                    Rigidbody2D rb = en.GetComponent<Rigidbody2D>();
+                    rb.AddForce(deltaPos.normalized * force * (1 - deltaPos.magnitude / areaRadius), ForceMode2D.Impulse);
+                }
+            }
+        }
+        else if (transform.tag == "EnemyBullet")
+        {
+            GameObject player = GameObject.FindGameObjectWithTag("Player");
+            if (player)
+            {
+                Vector2 deltaPos = -transform.position + player.transform.position;
+                if (deltaPos.sqrMagnitude <= areaRadius * areaRadius)
+                {
+                    float calculatedDamage = dmg - (deltaPos.magnitude / areaRadius)*dmg;
+                    player.SendMessage("TakeDamage", calculatedDamage, SendMessageOptions.RequireReceiver);
+
+                    Rigidbody2D rb = player.GetComponent<Rigidbody2D>();
+                    rb.AddForce(deltaPos.normalized * force * (1 - deltaPos.magnitude / areaRadius), ForceMode2D.Impulse);
+                }
+
+            }
         }
         else
         {
-            ArrayList things = new ArrayList();
-            things.AddRange(gm.GetTiles());
-            things.AddRange(gm.GetStations());
-
-            foreach (GameObject tile in things)
-            {
-                float tileRadius = tile.transform.GetComponent<CircleCollider2D>().radius * tile.transform.localScale.x;
-                if ((tile.transform.position - transform.position).sqrMagnitude - tileRadius * tileRadius > areaRadius * areaRadius)
-                    continue;
-                
-                Vector2 deltaPos = transform.position - tile.transform.position;
-                float calculatedDamage = dmg - ((deltaPos.magnitude - tileRadius) / areaRadius)*dmg;
-                tile.gameObject.SendMessage("TakeDamage", calculatedDamage, SendMessageOptions.DontRequireReceiver);
-            }
-
-            if (transform.tag == "PlayerBullet")
-            {
-                var enemies = gm.GetEnemies();
-                foreach(GameObject en in enemies)
-                {
-                    Vector2 deltaPos = -transform.position + en.transform.position;
-                    if (deltaPos.sqrMagnitude <= areaRadius * areaRadius)
-                    {
-                        float calculatedDamage = dmg - (deltaPos.magnitude / areaRadius)*dmg;
-                        en.SendMessage("TakeDamage", calculatedDamage, SendMessageOptions.RequireReceiver);
-
-                        Rigidbody2D rb = en.GetComponent<Rigidbody2D>();
-                        rb.AddForce(deltaPos.normalized * force * (1 - deltaPos.magnitude / areaRadius), ForceMode2D.Impulse);
-                    }
-                }
-            }
-            else if (transform.tag == "EnemyBullet")
-            {
-                GameObject player = GameObject.FindGameObjectWithTag("Player");
-                if (player)
-                {
-                    Vector2 deltaPos = -transform.position + player.transform.position;
-                    if (deltaPos.sqrMagnitude <= areaRadius * areaRadius)
-                    {
-                        float calculatedDamage = dmg - (deltaPos.magnitude / areaRadius)*dmg;
-                        player.SendMessage("TakeDamage", calculatedDamage, SendMessageOptions.RequireReceiver);
-
-                        Rigidbody2D rb = player.GetComponent<Rigidbody2D>();
-                        rb.AddForce(deltaPos.normalized * force * (1 - deltaPos.magnitude / areaRadius), ForceMode2D.Impulse);
-                    }
-
-                }
-            }
-            else
-            {
-                Debug.LogError("Untagged bullet/projectile, BulletScript.cs");
-            }
+            Debug.LogError("Untagged bullet/projectile, BulletScript.cs");
         }
 
         Destroy(gameObject);

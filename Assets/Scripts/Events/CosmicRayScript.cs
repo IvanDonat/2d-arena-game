@@ -24,14 +24,21 @@ public class CosmicRayScript : MonoBehaviour {
 
     void Update()
     {
+        if (IsOutOfBounds())
+            Destroy(gameObject);
+    }
+
+    bool IsOutOfBounds()
+    {
         if (transform.position.x >= worldWidth + 5)
-            Destroy(gameObject);
+             return true;
         else if (transform.position.x <= -worldWidth - 5)
-            Destroy(gameObject);
+            return true;
         else if (transform.position.y >= worldHeight + 5)
-            Destroy(gameObject);
+            return true;
         else if (transform.position.y <= -worldHeight - 5)
-            Destroy(gameObject);
+            return true;
+        return false;
     }
 
     void OnTriggerEnter2D(Collider2D c)
@@ -43,12 +50,18 @@ public class CosmicRayScript : MonoBehaviour {
             collidedWithPlayer = true;
         }
     }
-
+        
     void OnTriggerStay2D(Collider2D c)
     {
         if (collidedWithPlayer && c.CompareTag("Player"))
         {
             ps.TakeDamageSilent(continuousDamagePerSecond * Time.fixedDeltaTime);
         }
+    }
+
+    void OnTriggerExit2D(Collider2D c)
+    {
+        if (c.CompareTag("Player"))
+            collidedWithPlayer = false;
     }
 }
