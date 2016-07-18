@@ -8,16 +8,25 @@ public class CosmicRayScript : MonoBehaviour {
     public float continuousDamagePerSecond = 15f;
     private bool collidedWithPlayer = false;
 
+    private Color color;
+    private float colorTimeOffset;
+
     private GameManager gm;
     private float worldWidth, worldHeight;
 
     private PlayerScript ps;
+    private new SpriteRenderer renderer;
 
     void Start()
     {
         gm = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
         worldWidth = gm.GetWorldDimensions().x;
         worldHeight = gm.GetWorldDimensions().y;
+
+        renderer = GetComponent<SpriteRenderer>();
+        color = renderer.color;
+
+        colorTimeOffset = Random.Range(0.0f, 3.0f);
 
         GetComponent<Rigidbody2D>().velocity = transform.right * speed;
     }
@@ -26,6 +35,9 @@ public class CosmicRayScript : MonoBehaviour {
     {
         if (IsOutOfBounds())
             Destroy(gameObject);
+
+        color.a = Mathf.Sin(Time.time * 2 + colorTimeOffset) / 4 + 0.4f;
+        renderer.color = color;
     }
 
     bool IsOutOfBounds()
